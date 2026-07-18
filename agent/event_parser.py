@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 from typing import List, Literal, Optional
 
 from langchain_anthropic import ChatAnthropic
@@ -26,6 +26,22 @@ logger = get_logger(__name__)
 MODEL = "claude-sonnet-5"
 MAX_CONTENT_CHARS = 30000
 WEBPAGE_CONTENTS_CHARS = 20000
+
+# A source registered at least this long ago is "established": its back-catalog
+# was ingested on the first crawl, so a hash-gated content change that surfaces
+# a new event is a genuine announcement (the event appeared between two crawls),
+# not merely new-to-us.
+ESTABLISHED_SOURCE_HOURS = 48
+
+
+def _parse_ts(ts: Optional[str]) -> Optional[datetime]:
+    if not ts:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
 
 
 class ParsedEvent(BaseModel):
@@ -44,6 +60,14 @@ class ParsedEvent(BaseModel):
     genre: Optional[str] = None
     ticket_url: Optional[str] = Field(
         default=None, description="Direct ticket-purchase URL if present on the page"
+    )
+    post_url: Optional[str] = Field(
+        default=None,
+        description="If this event came from a social media POST block, that post's URL verbatim",
+    )
+    posted_at: Optional[str] = Field(
+        default=None,
+        description='If from a social POST block, the post\'s publish date "YYYY-MM-DD"',
     )
     is_free: Optional[bool] = Field(
         default=None,
@@ -73,9 +97,12 @@ Rules:
   recaps, and non-NYC events.
 - If the page lists no upcoming events, return an empty list.
 - Extract at most 40 events per page; if there are more, keep the 40 soonest.
-- The content may be social media post captions (marked "POST (<date>)"). Use each
+- The content may be social media post captions (marked "POST (<date>) <url>"). Use each
   post's date to resolve relative phrases like "this Friday". Only extract events
   you can pin to a specific calendar date; skip vague announcements.
+- For events extracted from a POST block, set post_url to that post's URL verbatim and
+  posted_at to the post's publish date as "YYYY-MM-DD" (the announcement post's date is
+  when the event was announced). Leave both null for non-social content.
 
 SOURCE: {source_name} ({url})
 
@@ -145,6 +172,8 @@ class EventParserAgent:
         dirty: dict[str, set] = {}  # event_entry_id -> updated sources to persist
         coords_cache = self._store.get_venue_coords_cache()
         logger.info(f"Venue coords cache: {len(coords_cache)} known venues")
+        source_meta = self._store.get_source_meta()
+        sightings: dict[tuple, dict] = {}  # (event_entry_id, source_id) -> sighting row, deduped per run
 
         for row in rows:
             try:
@@ -155,6 +184,24 @@ class EventParserAgent:
                 continue
 
             src = row.get("source_id") or row.get("url") or "unknown"
+            meta = source_meta.get(src) or {}
+            sighted_at = row.get("scraped_at") or datetime.now(timezone.utc).isoformat()
+
+            def _record_sighting(event_id: str, ev: ParsedEvent) -> None:
+                # post_url links this sighting to social_post_engagement, where
+                # the scorer picks up live view/like counts.
+                engagement = {
+                    k: v for k, v in
+                    {"post_url": ev.post_url, "posted_at": ev.posted_at}.items() if v
+                } or None
+                sightings.setdefault((event_id, src), {
+                    "event_entry_id": event_id,
+                    "source_id": src,
+                    "source_type": meta.get("source_type"),
+                    "sighted_at": sighted_at,
+                    "engagement": engagement,
+                })
+
             stats["events_extracted"] += len(events)
             entries = []
             page_refs = []
@@ -172,6 +219,8 @@ class EventParserAgent:
                         break
                 if ref is not None:
                     stats["dupes_skipped"] += 1
+                    if ref["id"]:
+                        _record_sighting(ref["id"], ev)
                     if src not in ref["sources"]:
                         ref["sources"].add(src)
                         if ref["pending"] is not None:
@@ -182,6 +231,20 @@ class EventParserAgent:
 
                 entry = self._to_entry(ev, row, entry_batch_id)
                 entry["seen_sources"] = [src]
+                # Announcement evidence, strongest first: a social announcement
+                # post's own publish date; else the hash-gate bound (an
+                # established source's page changed and a new event appeared →
+                # true announcement, bounded by this crawl). A brand-new source
+                # only proves the event is new to US.
+                posted = _parse_ts(ev.posted_at)
+                registered = _parse_ts(meta.get("created_at"))
+                if posted:
+                    entry["announced_at"] = posted.isoformat()
+                elif registered and registered < datetime.now(timezone.utc) - timedelta(
+                    hours=ESTABLISHED_SOURCE_HOURS
+                ):
+                    entry["announced_at"] = sighted_at
+                _record_sighting(entry["event_entry_id"], ev)
                 ref = {"id": entry["event_entry_id"], "sources": {src}, "pending": entry}
                 for k in self._keys_for(ev):
                     index.setdefault(k, ref)
@@ -211,6 +274,9 @@ class EventParserAgent:
                 stats["buzz_updates"] += 1
             except Exception as e:
                 logger.warning(f"seen_sources update failed for {eid}: {e}")
+
+        self._store.insert_sightings(list(sightings.values()))
+        stats["sightings"] = len(sightings)
 
         logger.info(f"=== Event Parse Run DONE | {stats} ===")
         return stats

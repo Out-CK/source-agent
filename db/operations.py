@@ -41,6 +41,12 @@ class RegistryStore:
     def get_unparsed_content(self, limit: Optional[int] = None) -> list[dict]: ...
     def mark_content_parsed(self, row_ids: list) -> None: ...
     def insert_event_entries(self, entries: list[dict]) -> None: ...
+    def insert_sightings(self, rows: list[dict]) -> None: ...
+    def get_source_meta(self) -> dict: ...
+    def get_upcoming_entries_for_scoring(self) -> list[dict]: ...
+    def get_all_sightings(self) -> list[dict]: ...
+    def insert_post_engagement(self, rows: list[dict]) -> None: ...
+    def get_latest_post_engagement(self) -> dict: ...
     def get_existing_future_entries(self) -> list[dict]: ...
     def next_event_entry_id(self) -> str: ...
     def get_venue_coords_cache(self) -> dict: ...
@@ -116,7 +122,7 @@ class SupabaseStore(RegistryStore):
     def get_unparsed_content(self, limit: Optional[int] = None) -> list[dict]:
         q = (
             self._sb.table("source_web_content")
-            .select("id, source_id, url, categories, content")
+            .select("id, source_id, url, categories, content, scraped_at")
             .eq("parsed", False)
             .order("scraped_at")
         )
@@ -156,6 +162,65 @@ class SupabaseStore(RegistryStore):
             .select("event_entry_id, artist, venue, date, start_time, seen_sources")
             .gte("event_date", _date.today().isoformat())
         )
+
+    def insert_sightings(self, rows: list[dict]) -> None:
+        if not rows:
+            return
+        try:
+            self._sb.table("event_sightings").insert(rows).execute()
+        except Exception as e:
+            logger.warning(f"Sightings batch insert failed ({e}); retrying row-by-row")
+            for r in rows:
+                try:
+                    self._sb.table("event_sightings").insert(r).execute()
+                except Exception as ex:
+                    logger.warning(f"insert_sightings skipped {r.get('event_entry_id')}: {ex}")
+
+    def get_source_meta(self) -> dict:
+        """source_id -> {source_type, created_at, last_scraped_at} for provenance checks."""
+        rows = self._paged(
+            self._sb.table("source_registry")
+            .select("source_id, source_type, created_at, last_scraped_at")
+        )
+        return {r["source_id"]: r for r in rows}
+
+    def get_upcoming_entries_for_scoring(self) -> list[dict]:
+        from datetime import date as _date
+
+        return self._paged(
+            self._sb.table("event_entry_database_v2")
+            .select("event_entry_id, venue, event_type, created_at, announced_at, "
+                    "onsale_at, seen_sources")
+            .gte("event_date", _date.today().isoformat())
+        )
+
+    def get_all_sightings(self) -> list[dict]:
+        return self._paged(
+            self._sb.table("event_sightings")
+            .select("event_entry_id, source_id, source_type, sighted_at, engagement")
+        )
+
+    def insert_post_engagement(self, rows: list[dict]) -> None:
+        if not rows:
+            return
+        try:
+            self._sb.table("social_post_engagement").insert(rows).execute()
+        except Exception as e:
+            logger.warning(f"Engagement batch insert failed ({e}); retrying row-by-row")
+            for r in rows:
+                try:
+                    self._sb.table("social_post_engagement").insert(r).execute()
+                except Exception as ex:
+                    logger.warning(f"insert_post_engagement skipped {r.get('post_url')}: {ex}")
+
+    def get_latest_post_engagement(self) -> dict:
+        """post_url -> most recent snapshot row."""
+        rows = self._paged(
+            self._sb.table("social_post_engagement")
+            .select("post_url, posted_at, views, likes, comments, followers, captured_at")
+            .order("captured_at", desc=False)
+        )
+        return {r["post_url"]: r for r in rows}  # later rows win
 
     def next_event_entry_id(self) -> str:
         return self._sb.rpc("next_event_entry_id").execute().data
@@ -315,6 +380,41 @@ class DryRunStore(RegistryStore):
         for e in entries:
             self._db["event_entry_database_v2"].append({**e, "created_at": _now()})
         self._save()
+
+    def insert_sightings(self, rows: list[dict]) -> None:
+        self._db.setdefault("event_sightings", []).extend(rows)
+        self._save()
+
+    def get_source_meta(self) -> dict:
+        return {
+            s["source_id"]: {
+                k: s.get(k) for k in ("source_id", "source_type", "created_at", "last_scraped_at")
+            }
+            for s in self._db["source_registry"]
+        }
+
+    def get_upcoming_entries_for_scoring(self) -> list[dict]:
+        return [
+            {k: e.get(k) for k in ("event_entry_id", "venue", "event_type", "created_at",
+                                   "announced_at", "onsale_at", "seen_sources")}
+            for e in self._db["event_entry_database_v2"]
+        ]
+
+    def get_all_sightings(self) -> list[dict]:
+        return list(self._db.get("event_sightings", []))
+
+    def insert_post_engagement(self, rows: list[dict]) -> None:
+        stamped = [{**r, "captured_at": _now()} for r in rows]
+        self._db.setdefault("social_post_engagement", []).extend(stamped)
+        self._save()
+
+    def get_latest_post_engagement(self) -> dict:
+        out: dict = {}
+        for r in self._db.get("social_post_engagement", []):
+            prev = out.get(r["post_url"])
+            if prev is None or (r.get("captured_at") or "") > (prev.get("captured_at") or ""):
+                out[r["post_url"]] = r
+        return out
 
     def get_existing_future_entries(self) -> list[dict]:
         return [

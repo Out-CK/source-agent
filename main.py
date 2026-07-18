@@ -70,6 +70,8 @@ def main() -> None:
                         help="Backfill lat/lng/address for entries missing coords")
     parser.add_argument("--sync-discovery", action="store_true",
                         help="Upsert upcoming events into the NYC Discovery feed tables")
+    parser.add_argument("--score-buzz", action="store_true",
+                        help="Recompute buzz_score/buzz_reasons for upcoming events from sightings")
     parser.add_argument("--enrich-media", action="store_true",
                         help="Backfill media_url for entries missing images")
     parser.add_argument("--stats", action="store_true")
@@ -126,6 +128,10 @@ def main() -> None:
                 store.update_event_entry(r["event_entry_id"], {"media_url": r["media_url"]})
                 updated += 1
         logger.info(f"Media backfill: updated {updated}/{len(rows)} entries")
+    elif args.score_buzz:
+        from agent.buzz_scorer import BuzzScorer
+
+        BuzzScorer(store).run()
     elif args.sync_discovery:
         from db.supabase_client import get_supabase_client
 

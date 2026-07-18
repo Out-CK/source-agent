@@ -12,7 +12,7 @@ import asyncio
 import hashlib
 from datetime import datetime, timezone
 
-from agent.social_fetcher import fetch_social_content
+from agent.social_fetcher import fetch_social
 from db.operations import RegistryStore
 from tools.nimble_extract_tool import NimbleExtractTool
 from utils.logger import get_logger
@@ -51,11 +51,19 @@ class SourceScraper:
         if limit:
             due = due[:limit]
         logger.info(f"=== Source Scrape Run | {len(due)} sources due ===")
-        stats = {"due": len(due), "changed": 0, "unchanged": 0, "failed": 0, "marked_dead": 0}
+        stats = {"due": len(due), "changed": 0, "unchanged": 0, "failed": 0,
+                 "marked_dead": 0, "engagement_rows": 0}
         if due:
             results = asyncio.run(self._scrape_all(due))
-            for source, content in results:
+            engagement: list[dict] = []
+            for source, content, eng_rows in results:
                 self._handle_result(source, content, stats)
+                engagement.extend(eng_rows)
+            # Engagement snapshots persist on EVERY scrape — including
+            # hash-unchanged ones — so the buzz scorer sees counts grow even
+            # when no new posts appear.
+            self._store.insert_post_engagement(engagement)
+            stats["engagement_rows"] = len(engagement)
         logger.info(f"=== Source Scrape Run DONE | {stats} ===")
         return stats
 
@@ -64,14 +72,17 @@ class SourceScraper:
 
         async def one(s):
             async with sem:
+                eng_rows: list[dict] = []
                 if s.get("source_type") == "social":
-                    content = await asyncio.to_thread(fetch_social_content, s["url"])
+                    content, eng_rows = await asyncio.to_thread(
+                        fetch_social, s["url"], s["source_id"]
+                    )
                 else:
                     page = await asyncio.to_thread(
                         self._extract._run, s["url"], s.get("scrape_options") or {}
                     )
                     content = page.get("content")
-                return s, content
+                return s, content, eng_rows
 
         return await asyncio.gather(*(one(s) for s in sources))
 

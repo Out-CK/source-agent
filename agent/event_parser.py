@@ -17,7 +17,9 @@ from typing import List, Literal, Optional
 from langchain_anthropic import ChatAnthropic
 from pydantic import BaseModel, Field
 
+from agent.media_enricher import MediaEnricher
 from db.operations import RegistryStore
+from utils.geocoder import enrich_entries_with_coords
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -129,6 +131,9 @@ class EventParserAgent:
         entry_batch_id = datetime.now().strftime("%m%d%Y_%H%M%S")
         existing_keys = self._existing_keys()
         batch_keys: set[tuple] = set()
+        coords_cache = self._store.get_venue_coords_cache()
+        logger.info(f"Venue coords cache: {len(coords_cache)} known venues")
+        media = MediaEnricher()
 
         for row in rows:
             try:
@@ -154,6 +159,11 @@ class EventParserAgent:
                 entries.append(self._to_entry(ev, row, entry_batch_id))
 
             if entries:
+                enrich_entries_with_coords(entries, coords_cache)
+                for e in entries:
+                    if e.get("lat") is not None:
+                        coords_cache[e["venue"]] = (e["lat"], e["lng"], e.get("address") or "")
+                media.enrich(entries)
                 self._store.insert_event_entries(entries)
                 stats["inserted"] += len(entries)
             self._store.mark_content_parsed([row["id"]])

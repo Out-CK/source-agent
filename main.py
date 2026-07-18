@@ -59,6 +59,11 @@ def main() -> None:
     parser.add_argument("--discover", action="store_true")
     parser.add_argument("--scrape", action="store_true")
     parser.add_argument("--parse", action="store_true")
+    parser.add_argument("--archive", action="store_true")
+    parser.add_argument("--geocode", action="store_true",
+                        help="Backfill lat/lng/address for entries missing coords")
+    parser.add_argument("--enrich-media", action="store_true",
+                        help="Backfill media_url for entries missing images")
     parser.add_argument("--stats", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--max-queries", type=int, default=15)
@@ -81,6 +86,38 @@ def main() -> None:
         from agent.event_parser import EventParserAgent
 
         EventParserAgent(store).run(limit=args.limit)
+    elif args.archive:
+        from agent.past_event_archiver import PastEventArchiver
+
+        PastEventArchiver(store).run()
+    elif args.geocode:
+        from utils.geocoder import enrich_entries_with_coords
+
+        rows = store.get_entries_missing_coords()
+        if args.limit:
+            rows = rows[: args.limit]
+        logger.info(f"Geocode backfill: {len(rows)} entries missing coords")
+        enrich_entries_with_coords(rows, store.get_venue_coords_cache())
+        updated = 0
+        for r in rows:
+            if r.get("lat") is not None:
+                store.update_event_entry(
+                    r["event_entry_id"],
+                    {"lat": r["lat"], "lng": r["lng"], "address": r.get("address")},
+                )
+                updated += 1
+        logger.info(f"Geocode backfill: updated {updated}/{len(rows)} entries")
+    elif args.enrich_media:
+        from agent.media_enricher import MediaEnricher
+
+        rows = store.get_entries_missing_media(limit=args.limit or 25)
+        MediaEnricher().enrich(rows, max_lookups=len(rows))
+        updated = 0
+        for r in rows:
+            if r.get("media_url"):
+                store.update_event_entry(r["event_entry_id"], {"media_url": r["media_url"]})
+                updated += 1
+        logger.info(f"Media backfill: updated {updated}/{len(rows)} entries")
     elif args.stats:
         cmd_stats(store)
     else:

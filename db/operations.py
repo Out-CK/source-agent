@@ -43,6 +43,13 @@ class RegistryStore:
     def insert_event_entries(self, entries: list[dict]) -> None: ...
     def get_existing_future_entries(self) -> list[dict]: ...
     def next_event_entry_id(self) -> str: ...
+    def get_venue_coords_cache(self) -> dict: ...
+    def get_entries_missing_coords(self) -> list[dict]: ...
+    def get_entries_missing_media(self, limit: int = 50) -> list[dict]: ...
+    def update_event_entry(self, event_entry_id: str, fields: dict) -> None: ...
+    def get_past_entries(self) -> list[dict]: ...
+    def insert_past_event_entry(self, entry: dict) -> None: ...
+    def delete_event_entry(self, event_entry_id: str) -> None: ...
 
 
 class SupabaseStore(RegistryStore):
@@ -147,6 +154,75 @@ class SupabaseStore(RegistryStore):
     def next_event_entry_id(self) -> str:
         return self._sb.rpc("next_event_entry_id").execute().data
 
+    def _paged(self, query_builder):
+        rows: list[dict] = []
+        page, offset = 1000, 0
+        while True:
+            batch = query_builder.range(offset, offset + page - 1).execute().data or []
+            rows.extend(batch)
+            if len(batch) < page:
+                return rows
+            offset += page
+
+    def get_venue_coords_cache(self) -> dict:
+        rows = self._paged(
+            self._sb.table("event_entry_database_v2")
+            .select("venue, address, lat, lng")
+            .not_.is_("lat", "null")
+        )
+        return {
+            r["venue"]: (r["lat"], r["lng"], r.get("address") or "")
+            for r in rows
+            if r.get("venue")
+        }
+
+    def get_entries_missing_coords(self) -> list[dict]:
+        return self._paged(
+            self._sb.table("event_entry_database_v2")
+            .select("event_entry_id, venue, address")
+            .is_("lat", "null")
+        )
+
+    def get_entries_missing_media(self, limit: int = 50) -> list[dict]:
+        res = (
+            self._sb.table("event_entry_database_v2")
+            .select("event_entry_id, artist, venue")
+            .is_("media_url", "null")
+            .limit(limit)
+            .execute()
+        )
+        return res.data or []
+
+    def update_event_entry(self, event_entry_id: str, fields: dict) -> None:
+        self._sb.table("event_entry_database_v2").update(fields).eq(
+            "event_entry_id", event_entry_id
+        ).execute()
+
+    def get_past_entries(self) -> list[dict]:
+        from datetime import date as _date, datetime as _dt
+
+        rows = self._paged(self._sb.table("event_entry_database_v2").select("*"))
+        past = []
+        for r in rows:
+            try:
+                d = _dt.strptime((r.get("date") or "").strip(), "%m-%d-%Y").date()
+            except ValueError:
+                continue
+            if d < _date.today():
+                past.append(r)
+        return past
+
+    def insert_past_event_entry(self, entry: dict) -> None:
+        # Drop the primary key so the past table auto-assigns its own
+        self._sb.table("past_event_entry_database").insert(
+            {k: v for k, v in entry.items() if k != "id"}
+        ).execute()
+
+    def delete_event_entry(self, event_entry_id: str) -> None:
+        self._sb.table("event_entry_database_v2").delete().eq(
+            "event_entry_id", event_entry_id
+        ).execute()
+
 
 class DryRunStore(RegistryStore):
     """File-backed store mirroring the Supabase tables, for --dry-run."""
@@ -233,6 +309,60 @@ class DryRunStore(RegistryStore):
             self, "_entry_id_counter", len(self._db["event_entry_database_v2"])
         ) + 1
         return f"{self._entry_id_counter:012d}"
+
+    def get_venue_coords_cache(self) -> dict:
+        return {
+            e["venue"]: (e["lat"], e["lng"], e.get("address") or "")
+            for e in self._db["event_entry_database_v2"]
+            if e.get("venue") and e.get("lat") is not None
+        }
+
+    def get_entries_missing_coords(self) -> list[dict]:
+        return [
+            {k: e.get(k) for k in ("event_entry_id", "venue", "address")}
+            for e in self._db["event_entry_database_v2"]
+            if e.get("lat") is None
+        ]
+
+    def get_entries_missing_media(self, limit: int = 50) -> list[dict]:
+        rows = [
+            {k: e.get(k) for k in ("event_entry_id", "artist", "venue")}
+            for e in self._db["event_entry_database_v2"]
+            if not e.get("media_url")
+        ]
+        return rows[:limit]
+
+    def update_event_entry(self, event_entry_id: str, fields: dict) -> None:
+        for e in self._db["event_entry_database_v2"]:
+            if e.get("event_entry_id") == event_entry_id:
+                e.update(fields)
+        self._save()
+
+    def get_past_entries(self) -> list[dict]:
+        from datetime import date as _date, datetime as _dt
+
+        past = []
+        for e in self._db["event_entry_database_v2"]:
+            try:
+                d = _dt.strptime((e.get("date") or "").strip(), "%m-%d-%Y").date()
+            except ValueError:
+                continue
+            if d < _date.today():
+                past.append(e)
+        return past
+
+    def insert_past_event_entry(self, entry: dict) -> None:
+        self._db.setdefault("past_event_entry_database", []).append(
+            {k: v for k, v in entry.items() if k != "id"}
+        )
+        self._save()
+
+    def delete_event_entry(self, event_entry_id: str) -> None:
+        self._db["event_entry_database_v2"] = [
+            e for e in self._db["event_entry_database_v2"]
+            if e.get("event_entry_id") != event_entry_id
+        ]
+        self._save()
 
 
 def _is_due(source: dict) -> bool:

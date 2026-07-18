@@ -28,8 +28,9 @@ logger = get_logger(__name__)
 
 CONCURRENCY_LIMIT = 5
 MAX_DISCOVERY_DEPTH = 2  # search->extract->resolve counts as depth 2
-MAX_LEADS_PER_RUN = 25
-MAX_VALIDATIONS_PER_RUN = 40
+# Every distinct lead gets a follow-up search; this is a runaway backstop, not a budget.
+MAX_LEADS_PER_RUN = 200
+MAX_VALIDATIONS_PER_RUN = 100
 
 
 class DiscoveryAgent:
@@ -74,7 +75,21 @@ class DiscoveryAgent:
         candidates: list[SourceCandidate] = list(result.candidates)
         for c in candidates:
             c.origin_query = origin_query_for(c.found_on_page_url)
-        leads = result.leads[:MAX_LEADS_PER_RUN]
+
+        # One follow-up search per distinct lead: dedupe by entity name first so
+        # a venue mentioned in three listicles doesn't get three searches.
+        seen_leads: set[str] = set()
+        leads = []
+        for l in result.leads:
+            key = l.name.strip().lower()
+            if key and key not in seen_leads:
+                seen_leads.add(key)
+                leads.append(l)
+        if len(leads) > MAX_LEADS_PER_RUN:
+            logger.warning(
+                f"Lead backstop hit: resolving {MAX_LEADS_PER_RUN} of {len(leads)} leads"
+            )
+            leads = leads[:MAX_LEADS_PER_RUN]
         stats["candidates"] = len(candidates)
         stats["leads"] = len(leads)
         logger.info(f"Extraction: {len(candidates)} direct candidates, {len(leads)} leads")
@@ -100,6 +115,11 @@ class DiscoveryAgent:
         # Step 6 — validate, then insert into registry
         validator = SourceValidatorAgent()
         added_by_query: dict[str, int] = {}
+        if len(fresh) > MAX_VALIDATIONS_PER_RUN:
+            logger.warning(
+                f"Validation backstop hit: validating {MAX_VALIDATIONS_PER_RUN} of "
+                f"{len(fresh)} candidates; the rest are dropped this run"
+            )
         for c in fresh[:MAX_VALIDATIONS_PER_RUN]:
             v = validator.validate(c)
             if v.status != "active":

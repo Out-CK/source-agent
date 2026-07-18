@@ -72,7 +72,7 @@ def main() -> None:
                         help="Backfill media_url for entries missing images")
     parser.add_argument("--stats", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
-    parser.add_argument("--max-queries", type=int, default=15)
+    parser.add_argument("--max-queries", type=int, default=30)
     parser.add_argument("--limit", type=int, default=None)
     args = parser.parse_args()
 

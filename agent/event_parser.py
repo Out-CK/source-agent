@@ -45,6 +45,12 @@ class ParsedEvent(BaseModel):
     ticket_url: Optional[str] = Field(
         default=None, description="Direct ticket-purchase URL if present on the page"
     )
+    is_free: Optional[bool] = Field(
+        default=None,
+        description="true only if the page explicitly says the event is free (free "
+        "admission, no cover, free with RSVP). false if tickets are sold or a price "
+        "is shown. null when the page doesn't say.",
+    )
 
 
 class PageParseResult(BaseModel):
@@ -271,6 +277,7 @@ class EventParserAgent:
             "start_time": ev.start_time,
             "end_time": ev.end_time,
             "genre": ev.genre,
+            "is_free": ev.is_free,
             "address": ev.address,
             "webpage_contents": content,
         }

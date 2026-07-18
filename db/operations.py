@@ -190,10 +190,15 @@ class SupabaseStore(RegistryStore):
         )
 
     def get_entries_missing_media(self, limit: int = 50) -> list[dict]:
+        # Upcoming events only; the enricher reads the event's own page first,
+        # so it needs the ticket/source URLs.
+        from datetime import date as _date
+
         res = (
             self._sb.table("event_entry_database_v2")
-            .select("event_entry_id, artist, venue")
+            .select("event_entry_id, artist, venue, tickets_source_1, no_tickets_source_1")
             .is_("media_url", "null")
+            .gte("event_date", _date.today().isoformat())
             .limit(limit)
             .execute()
         )
@@ -340,7 +345,8 @@ class DryRunStore(RegistryStore):
 
     def get_entries_missing_media(self, limit: int = 50) -> list[dict]:
         rows = [
-            {k: e.get(k) for k in ("event_entry_id", "artist", "venue")}
+            {k: e.get(k) for k in ("event_entry_id", "artist", "venue",
+                                   "tickets_source_1", "no_tickets_source_1")}
             for e in self._db["event_entry_database_v2"]
             if not e.get("media_url")
         ]

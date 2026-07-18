@@ -50,7 +50,7 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       - name: Backfill media images
         if: always()
-        run: python main.py --enrich-media --limit 50
+        run: python main.py --enrich-media --limit 300
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           NIMBLE_API_KEY: ${{ secrets.NIMBLE_API_KEY }}

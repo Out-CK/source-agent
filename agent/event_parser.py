@@ -152,11 +152,12 @@ class EventParserAgent:
                 if not d or d < today:
                     stats["past_or_invalid"] += 1
                     continue
-                keys = self._keys_for(ev)
-                if any(k in existing_keys or k in batch_keys for k in keys):
+                if any(
+                    k in existing_keys or k in batch_keys for k in self._match_keys(ev)
+                ):
                     stats["dupes_skipped"] += 1
                     continue
-                batch_keys.update(keys)
+                batch_keys.update(self._keys_for(ev))
                 entries.append(self._to_entry(ev, row, entry_batch_id))
 
             if entries:
@@ -218,19 +219,42 @@ class EventParserAgent:
 
     @staticmethod
     def _keys_for_row(e) -> list[tuple]:
+        """Keys a stored row contributes to the dedup index."""
         artist = _norm_artist(e.get("artist") or "")
         venue = _norm_venue(e.get("venue") or "")
         d = (e.get("date") or "").strip()
         t = _norm_time(e.get("start_time"))
-        keys = [("avd", artist, venue, d)]
+        keys = [("avd", artist, venue, d, t or ""), ("avd*", artist, venue, d)]
         if t:
             keys.append(("vdt", venue, d, t))
         return keys
 
+    @staticmethod
+    def _match_keys_for_row(e) -> list[tuple]:
+        """Keys a candidate event is checked against before insert.
+
+        Distinct showtimes at the same artist/venue/date are separate events
+        (early/late shows), so a timed event only collides with the same time —
+        or with an untimed listing of the same show. An untimed event collides
+        with any listing of that artist/venue/date. Mirrors the DB's
+        uq_event_v2_dedup_key unique index (artist, venue, date, time)."""
+        artist = _norm_artist(e.get("artist") or "")
+        venue = _norm_venue(e.get("venue") or "")
+        d = (e.get("date") or "").strip()
+        t = _norm_time(e.get("start_time"))
+        if not t:
+            return [("avd*", artist, venue, d)]
+        return [("avd", artist, venue, d, t), ("avd", artist, venue, d, ""), ("vdt", venue, d, t)]
+
     def _keys_for(self, ev: ParsedEvent) -> list[tuple]:
-        return self._keys_for_row(
-            {"artist": ev.artist, "venue": ev.venue, "date": ev.date, "start_time": ev.start_time}
-        )
+        return self._keys_for_row(self._ev_dict(ev))
+
+    def _match_keys(self, ev: ParsedEvent) -> list[tuple]:
+        return self._match_keys_for_row(self._ev_dict(ev))
+
+    @staticmethod
+    def _ev_dict(ev: ParsedEvent) -> dict:
+        return {"artist": ev.artist, "venue": ev.venue, "date": ev.date, "start_time": ev.start_time}
 
     def _to_entry(self, ev: ParsedEvent, row: dict, entry_batch_id: str) -> dict:
         content = (row.get("content") or "")[:WEBPAGE_CONTENTS_CHARS]

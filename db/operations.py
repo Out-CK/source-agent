@@ -129,28 +129,33 @@ class SupabaseStore(RegistryStore):
             self._sb.table("source_web_content").update({"parsed": True}).eq("id", rid).execute()
 
     def insert_event_entries(self, entries: list[dict]) -> None:
-        if entries:
+        if not entries:
+            return
+        try:
             self._sb.table("event_entry_database_v2").insert(entries).execute()
+        except Exception as e:
+            # uq_event_v2_dedup_key rejects true duplicates; retry row-by-row so
+            # one conflict doesn't sink the whole batch.
+            logger.warning(f"Batch insert failed ({e}); retrying row-by-row")
+            for entry in entries:
+                try:
+                    self._sb.table("event_entry_database_v2").insert(entry).execute()
+                except Exception as ex:
+                    logger.warning(
+                        f"insert_event_entries skipped {entry.get('event_entry_id')}: {ex}"
+                    )
 
     def get_existing_future_entries(self) -> list[dict]:
-        # date is a text MM-DD-YYYY column, so >= comparisons in SQL are unreliable;
-        # fetch the dedup columns and filter by real dates in the parser.
+        # event_date is a real date column (kept in sync from the MM-DD-YYYY text
+        # column by trigger), so today-or-later filtering happens server-side.
         # Paginate past PostgREST's 1000-row cap or the dedup index silently truncates.
-        rows: list[dict] = []
-        page = 1000
-        offset = 0
-        while True:
-            res = (
-                self._sb.table("event_entry_database_v2")
-                .select("event_entry_id, artist, venue, date, start_time")
-                .range(offset, offset + page - 1)
-                .execute()
-            )
-            batch = res.data or []
-            rows.extend(batch)
-            if len(batch) < page:
-                return rows
-            offset += page
+        from datetime import date as _date
+
+        return self._paged(
+            self._sb.table("event_entry_database_v2")
+            .select("event_entry_id, artist, venue, date, start_time")
+            .gte("event_date", _date.today().isoformat())
+        )
 
     def next_event_entry_id(self) -> str:
         return self._sb.rpc("next_event_entry_id").execute().data
@@ -200,18 +205,15 @@ class SupabaseStore(RegistryStore):
         ).execute()
 
     def get_past_entries(self) -> list[dict]:
-        from datetime import date as _date, datetime as _dt
+        # Rows with unparseable dates have event_date NULL and are never archived,
+        # matching the old Python-side behavior.
+        from datetime import date as _date
 
-        rows = self._paged(self._sb.table("event_entry_database_v2").select("*"))
-        past = []
-        for r in rows:
-            try:
-                d = _dt.strptime((r.get("date") or "").strip(), "%m-%d-%Y").date()
-            except ValueError:
-                continue
-            if d < _date.today():
-                past.append(r)
-        return past
+        return self._paged(
+            self._sb.table("event_entry_database_v2")
+            .select("*")
+            .lt("event_date", _date.today().isoformat())
+        )
 
     def insert_past_event_entry(self, entry: dict) -> None:
         # Drop the primary key so the past table auto-assigns its own

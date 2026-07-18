@@ -113,10 +113,26 @@ class QueryGeneratorAgent:
         self._llm = ChatAnthropic(model=MODEL, max_tokens=4096).with_structured_output(QueryPlan)
         self._rng = rng or random.Random()
 
+    def _angle_for_category(self, category: str) -> str:
+        style = self._rng.choice(["type+category", "freshness+category+borough"])
+        if style == "type+category":
+            return f"{self._rng.choice(SOURCE_TYPE_ANGLES)} for {category} events"
+        return (
+            f"{category} venues/spaces {self._rng.choice(FRESHNESS_ANGLES)} "
+            f"near {self._rng.choice(NEIGHBORHOODS)}"
+        )
+
     def _sample_angles(self, n_angles: int) -> list[str]:
-        """Build required angle combos by crossing randomly-sampled dimensions."""
-        angles = []
-        for _ in range(n_angles):
+        """Build required angle combos by crossing randomly-sampled dimensions.
+
+        Stratified: every category gets at least one angle per run (as many as
+        fit when n_angles < 6); the remaining slots are free random rolls,
+        which may target no category at all (e.g. neighborhood calendars)."""
+        cats = list(CATEGORIES)
+        self._rng.shuffle(cats)
+        angles = [self._angle_for_category(c) for c in cats[:n_angles]]
+
+        for _ in range(max(0, n_angles - len(angles))):
             style = self._rng.choice(["type+category", "type+neighborhood", "freshness+category+borough"])
             if style == "type+category":
                 angles.append(
@@ -131,6 +147,7 @@ class QueryGeneratorAgent:
                     f"{self._rng.choice(CATEGORIES)} venues/spaces {self._rng.choice(FRESHNESS_ANGLES)} "
                     f"near {self._rng.choice(NEIGHBORHOODS)}"
                 )
+        self._rng.shuffle(angles)
         return angles
 
     def generate(self, history: list[dict], n_queries: int = 15) -> QueryPlan:

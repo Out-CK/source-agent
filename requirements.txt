@@ -1,0 +1,7 @@
+langchain-anthropic>=1.0
+langchain-core>=1.0
+nimble-python>=0.18
+supabase>=2.0
+pydantic>=2.0
+tenacity>=8.0
+python-dotenv>=1.0

@@ -1,0 +1,24 @@
+name: Daily Source Scrape
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every day 11:00 UTC (7 AM ET), before the vertical agent runs
+    - cron: "0 11 * * *"
+
+jobs:
+  source-scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python main.py --scrape
+        env:
+          NIMBLE_API_KEY: ${{ secrets.NIMBLE_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

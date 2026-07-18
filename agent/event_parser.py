@@ -137,8 +137,12 @@ class EventParserAgent:
             return stats
 
         entry_batch_id = datetime.now().strftime("%m%d%Y_%H%M%S")
-        existing_keys = self._existing_keys()
-        batch_keys: set[tuple] = set()
+        stats["buzz_updates"] = 0
+        # Dedup index: key -> shared ref {id, sources, pending}. A duplicate hit
+        # is not discarded — the duplicating source is recorded in seen_sources,
+        # which is the buzz signal (how many sources list this event).
+        index = self._build_index()
+        dirty: dict[str, set] = {}  # event_entry_id -> updated sources to persist
         coords_cache = self._store.get_venue_coords_cache()
         logger.info(f"Venue coords cache: {len(coords_cache)} known venues")
 
@@ -150,21 +154,39 @@ class EventParserAgent:
                 logger.error(f"Parse failed for {row.get('url')} (left unparsed for retry): {e}")
                 continue
 
+            src = row.get("source_id") or row.get("url") or "unknown"
             stats["events_extracted"] += len(events)
             entries = []
+            page_refs = []
             today = date.today()
             for ev in events:
                 d = _parse_date(ev.date)
                 if not d or d < today:
                     stats["past_or_invalid"] += 1
                     continue
-                if any(
-                    k in existing_keys or k in batch_keys for k in self._match_keys(ev)
-                ):
+
+                ref = None
+                for k in self._match_keys(ev):
+                    if k in index:
+                        ref = index[k]
+                        break
+                if ref is not None:
                     stats["dupes_skipped"] += 1
+                    if src not in ref["sources"]:
+                        ref["sources"].add(src)
+                        if ref["pending"] is not None:
+                            ref["pending"]["seen_sources"] = sorted(ref["sources"])
+                        elif ref["id"]:
+                            dirty[ref["id"]] = ref["sources"]
                     continue
-                batch_keys.update(self._keys_for(ev))
-                entries.append(self._to_entry(ev, row, entry_batch_id))
+
+                entry = self._to_entry(ev, row, entry_batch_id)
+                entry["seen_sources"] = [src]
+                ref = {"id": entry["event_entry_id"], "sources": {src}, "pending": entry}
+                for k in self._keys_for(ev):
+                    index.setdefault(k, ref)
+                page_refs.append(ref)
+                entries.append(entry)
 
             if entries:
                 # Media images are backfilled by the daily --enrich-media step;
@@ -175,10 +197,20 @@ class EventParserAgent:
                         coords_cache[e["venue"]] = (e["lat"], e["lng"], e.get("address") or "")
                 self._store.insert_event_entries(entries)
                 stats["inserted"] += len(entries)
+            for ref in page_refs:
+                ref["pending"] = None
             self._store.mark_content_parsed([row["id"]])
             logger.info(
                 f"Parsed {row.get('url')}: {len(events)} events, {len(entries)} inserted"
             )
+
+        # Persist buzz updates for already-stored entries that new sources confirmed
+        for eid, sources in dirty.items():
+            try:
+                self._store.update_event_entry(eid, {"seen_sources": sorted(sources)})
+                stats["buzz_updates"] += 1
+            except Exception as e:
+                logger.warning(f"seen_sources update failed for {eid}: {e}")
 
         logger.info(f"=== Event Parse Run DONE | {stats} ===")
         return stats
@@ -216,12 +248,19 @@ class EventParserAgent:
         logger.warning("Repaired double-encoded structured output")
         return PageParseResult(events=events)
 
-    def _existing_keys(self) -> set[tuple]:
-        keys: set[tuple] = set()
+    def _build_index(self) -> dict:
+        """key -> shared {'id', 'sources', 'pending'} ref for every stored future entry."""
+        index: dict = {}
         for e in self._store.get_existing_future_entries():
-            keys.update(self._keys_for_row(e))
-        logger.info(f"Dedup index built from {len(keys)} existing-entry keys")
-        return keys
+            ref = {
+                "id": e.get("event_entry_id"),
+                "sources": set(e.get("seen_sources") or []),
+                "pending": None,
+            }
+            for k in self._keys_for_row(e):
+                index.setdefault(k, ref)
+        logger.info(f"Dedup index built from {len(index)} existing-entry keys")
+        return index
 
     @staticmethod
     def _keys_for_row(e) -> list[tuple]:

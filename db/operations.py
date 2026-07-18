@@ -153,7 +153,7 @@ class SupabaseStore(RegistryStore):
 
         return self._paged(
             self._sb.table("event_entry_database_v2")
-            .select("event_entry_id, artist, venue, date, start_time")
+            .select("event_entry_id, artist, venue, date, start_time, seen_sources")
             .gte("event_date", _date.today().isoformat())
         )
 
@@ -313,7 +313,8 @@ class DryRunStore(RegistryStore):
 
     def get_existing_future_entries(self) -> list[dict]:
         return [
-            {k: e.get(k) for k in ("event_entry_id", "artist", "venue", "date", "start_time")}
+            {k: e.get(k) for k in ("event_entry_id", "artist", "venue", "date",
+                                   "start_time", "seen_sources")}
             for e in self._db["event_entry_database_v2"]
         ]
 

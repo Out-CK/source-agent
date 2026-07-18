@@ -12,6 +12,7 @@ import asyncio
 import hashlib
 from datetime import datetime, timezone
 
+from agent.social_fetcher import fetch_social_content
 from db.operations import RegistryStore
 from tools.nimble_extract_tool import NimbleExtractTool
 from utils.logger import get_logger
@@ -49,8 +50,12 @@ class SourceScraper:
 
         async def one(s):
             async with sem:
-                page = await asyncio.to_thread(self._extract._run, s["url"])
-                return s, page.get("content")
+                if s.get("source_type") == "social":
+                    content = await asyncio.to_thread(fetch_social_content, s["url"])
+                else:
+                    page = await asyncio.to_thread(self._extract._run, s["url"])
+                    content = page.get("content")
+                return s, content
 
         return await asyncio.gather(*(one(s) for s in sources))
 

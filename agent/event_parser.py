@@ -68,6 +68,9 @@ Rules:
   recaps, and non-NYC events.
 - If the page lists no upcoming events, return an empty list.
 - Extract at most 40 events per page; if there are more, keep the 40 soonest.
+- The content may be social media post captions (marked "POST (<date>)"). Use each
+  post's date to resolve relative phrases like "this Friday". Only extract events
+  you can pin to a specific calendar date; skip vague announcements.
 
 SOURCE: {source_name} ({url})
 

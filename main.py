@@ -29,7 +29,12 @@ logger = get_logger(__name__)
 
 
 def cmd_seed(store) -> None:
-    seeds = json.loads((Path(__file__).parent / "seeds" / "seed_sources.json").read_text())
+    seeds_dir = Path(__file__).parent / "seeds"
+    seeds = []
+    for fname in ("seed_sources.json", "social_sources.json"):
+        f = seeds_dir / fname
+        if f.exists():
+            seeds.extend(json.loads(f.read_text()))
     added = 0
     for s in seeds:
         row = build_source_row(
@@ -38,8 +43,9 @@ def cmd_seed(store) -> None:
             url=s["url"],
             source_type=s["source_type"],
             categories=s["categories"],
-            status="active",
+            status=s.get("status", "active"),
             discovery_method="seed",
+            scrape_frequency_hours=s.get("scrape_frequency_hours", 24),
         )
         if store.insert_source(row):
             added += 1

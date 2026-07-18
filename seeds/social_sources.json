@@ -1,0 +1,1925 @@
+[
+  {
+    "name": "@4charlesnyc (instagram)",
+    "url": "https://www.instagram.com/4charlesnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@55walker (instagram)",
+    "url": "https://www.instagram.com/55walker/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@aegpresents (instagram)",
+    "url": "https://www.instagram.com/aegpresents/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@artforum (instagram)",
+    "url": "https://www.instagram.com/artforum/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@artnews (instagram)",
+    "url": "https://www.instagram.com/artnews/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@artsy (instagram)",
+    "url": "https://www.instagram.com/artsy/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@atomixnyc (instagram)",
+    "url": "https://www.instagram.com/atomixnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@avant_gardner (instagram)",
+    "url": "https://www.instagram.com/avant_gardner/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@babysallrightbk (instagram)",
+    "url": "https://www.instagram.com/babysallrightbk/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@barclayslive (instagram)",
+    "url": "https://www.instagram.com/barclayslive/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@bigseventravel (instagram)",
+    "url": "https://www.instagram.com/bigseventravel/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@blumandpoe (instagram)",
+    "url": "https://www.instagram.com/blumandpoe/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@bonappetitmag (instagram)",
+    "url": "https://www.instagram.com/bonappetitmag/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@boweryballroom (instagram)",
+    "url": "https://www.instagram.com/boweryballroom/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@boweryelectric (instagram)",
+    "url": "https://www.instagram.com/boweryelectric/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@bowerypresents (instagram)",
+    "url": "https://www.instagram.com/bowerypresents/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@bridgewater_art (instagram)",
+    "url": "https://www.instagram.com/bridgewater_art/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@brooklynmirage (instagram)",
+    "url": "https://www.instagram.com/brooklynmirage/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@brooklynmuseum (instagram)",
+    "url": "https://www.instagram.com/brooklynmuseum/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@brooklynsteel (instagram)",
+    "url": "https://www.instagram.com/brooklynsteel/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@brooklynvegan (instagram)",
+    "url": "https://www.instagram.com/brooklynvegan/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@cheatdayeats (instagram)",
+    "url": "https://www.instagram.com/cheatdayeats/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@chefericripert (instagram)",
+    "url": "https://www.instagram.com/chefericripert/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@chefmarcusbklyn (instagram)",
+    "url": "https://www.instagram.com/chefmarcusbklyn/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@clockworknyc (instagram)",
+    "url": "https://www.instagram.com/clockworknyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@complexeats (instagram)",
+    "url": "https://www.instagram.com/complexeats/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@continyc (instagram)",
+    "url": "https://www.instagram.com/continyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@cooperhewitt (instagram)",
+    "url": "https://www.instagram.com/cooperhewitt/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@crownyc (instagram)",
+    "url": "https://www.instagram.com/crownyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@culturehub_nyc (instagram)",
+    "url": "https://www.instagram.com/culturehub_nyc/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@danielhumm (instagram)",
+    "url": "https://www.instagram.com/danielhumm/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@davidchang (instagram)",
+    "url": "https://www.instagram.com/davidchang/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@davidzwirner (instagram)",
+    "url": "https://www.instagram.com/davidzwirner/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@devourpower (instagram)",
+    "url": "https://www.instagram.com/devourpower/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@dhamakanyc (instagram)",
+    "url": "https://www.instagram.com/dhamakanyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@dice.fm (instagram)",
+    "url": "https://www.instagram.com/dice.fm/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@donangienyc (instagram)",
+    "url": "https://www.instagram.com/donangienyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@double.chicken.please (instagram)",
+    "url": "https://www.instagram.com/double.chicken.please/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@eaterny (instagram)",
+    "url": "https://www.instagram.com/eaterny/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@eatingnyc (instagram)",
+    "url": "https://www.instagram.com/eatingnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@eddiehappytime (instagram)",
+    "url": "https://www.instagram.com/eddiehappytime/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@elsewherebrooklyn (instagram)",
+    "url": "https://www.instagram.com/elsewherebrooklyn/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@feedmeimfamous (instagram)",
+    "url": "https://www.instagram.com/feedmeimfamous/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@firstwefeast (instagram)",
+    "url": "https://www.instagram.com/firstwefeast/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@foodbabyny (instagram)",
+    "url": "https://www.instagram.com/foodbabyny/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@foodyoda (instagram)",
+    "url": "https://www.instagram.com/foodyoda/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@forsythnyc (instagram)",
+    "url": "https://www.instagram.com/forsythnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@friezearts (instagram)",
+    "url": "https://www.instagram.com/friezearts/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@gagosian (instagram)",
+    "url": "https://www.instagram.com/gagosian/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@gladstonegallery (instagram)",
+    "url": "https://www.instagram.com/gladstonegallery/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@grubstreet (instagram)",
+    "url": "https://www.instagram.com/grubstreet/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@guggenheim (instagram)",
+    "url": "https://www.instagram.com/guggenheim/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@hauserwirth (instagram)",
+    "url": "https://www.instagram.com/hauserwirth/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@houseofyes (instagram)",
+    "url": "https://www.instagram.com/houseofyes/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@hungrypost (instagram)",
+    "url": "https://www.instagram.com/hungrypost/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@hyperallergic (instagram)",
+    "url": "https://www.instagram.com/hyperallergic/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@infatuation (instagram)",
+    "url": "https://www.instagram.com/infatuation/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@irvingplaza (instagram)",
+    "url": "https://www.instagram.com/irvingplaza/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@j.kenjilopezalt (instagram)",
+    "url": "https://www.instagram.com/j.kenjilopezalt/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@jalopynyc (instagram)",
+    "url": "https://www.instagram.com/jalopynyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@justineatsfood (instagram)",
+    "url": "https://www.instagram.com/justineatsfood/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@kingstheatre (instagram)",
+    "url": "https://www.instagram.com/kingstheatre/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@knittingfactory (instagram)",
+    "url": "https://www.instagram.com/knittingfactory/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@kobedessertsnyc (instagram)",
+    "url": "https://www.instagram.com/kobedessertsnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@lilianyc (instagram)",
+    "url": "https://www.instagram.com/lilianyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@livenation (instagram)",
+    "url": "https://www.instagram.com/livenation/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@luhringaugustine (instagram)",
+    "url": "https://www.instagram.com/luhringaugustine/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@maboroshinyc (instagram)",
+    "url": "https://www.instagram.com/maboroshinyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@madnyc (instagram)",
+    "url": "https://www.instagram.com/madnyc/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@mariangoodman (instagram)",
+    "url": "https://www.instagram.com/mariangoodman/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@matthewmarks (instagram)",
+    "url": "https://www.instagram.com/matthewmarks/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@mercuryloungenyc (instagram)",
+    "url": "https://www.instagram.com/mercuryloungenyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@metmuseum (instagram)",
+    "url": "https://www.instagram.com/metmuseum/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@michelinguide (instagram)",
+    "url": "https://www.instagram.com/michelinguide/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@musichallofw (instagram)",
+    "url": "https://www.instagram.com/musichallofw/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@newforkcity (instagram)",
+    "url": "https://www.instagram.com/newforkcity/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@newmuseum (instagram)",
+    "url": "https://www.instagram.com/newmuseum/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@newyorkmouth (instagram)",
+    "url": "https://www.instagram.com/newyorkmouth/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@notatouristnyc (instagram)",
+    "url": "https://www.instagram.com/notatouristnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nublu151 (instagram)",
+    "url": "https://www.instagram.com/nublu151/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nyartbeat (instagram)",
+    "url": "https://www.instagram.com/nyartbeat/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycbucketlist (instagram)",
+    "url": "https://www.instagram.com/nycbucketlist/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@nyceeeats (instagram)",
+    "url": "https://www.instagram.com/nyceeeats/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycfat (instagram)",
+    "url": "https://www.instagram.com/nycfat/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycfoodcoma (instagram)",
+    "url": "https://www.instagram.com/nycfoodcoma/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycfooddiary (instagram)",
+    "url": "https://www.instagram.com/nycfooddiary/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycfoodfinds (instagram)",
+    "url": "https://www.instagram.com/nycfoodfinds/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycfoodgals (instagram)",
+    "url": "https://www.instagram.com/nycfoodgals/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycfoodguide (instagram)",
+    "url": "https://www.instagram.com/nycfoodguide/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycgo (instagram)",
+    "url": "https://www.instagram.com/nycgo/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nytfood (instagram)",
+    "url": "https://www.instagram.com/nytfood/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@opentable (instagram)",
+    "url": "https://www.instagram.com/opentable/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@pacegallery (instagram)",
+    "url": "https://www.instagram.com/pacegallery/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@papermag (instagram)",
+    "url": "https://www.instagram.com/papermag/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@perrotin (instagram)",
+    "url": "https://www.instagram.com/perrotin/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@petzelgallery (instagram)",
+    "url": "https://www.instagram.com/petzelgallery/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@pianos_nyc (instagram)",
+    "url": "https://www.instagram.com/pianos_nyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@pier17nyc (instagram)",
+    "url": "https://www.instagram.com/pier17nyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@pioneerworks (instagram)",
+    "url": "https://www.instagram.com/pioneerworks/",
+    "source_type": "social",
+    "categories": [
+      "art",
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@printedmatternyc (instagram)",
+    "url": "https://www.instagram.com/printedmatternyc/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@publicrecordsnyc (instagram)",
+    "url": "https://www.instagram.com/publicrecordsnyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@radiocity (instagram)",
+    "url": "https://www.instagram.com/radiocity/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@reservationnyc (instagram)",
+    "url": "https://www.instagram.com/reservationnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@resy (instagram)",
+    "url": "https://www.instagram.com/resy/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@rockwoodmusichall (instagram)",
+    "url": "https://www.instagram.com/rockwoodmusichall/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@roughtradesnyc (instagram)",
+    "url": "https://www.instagram.com/roughtradesnyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@secretnyc (instagram)",
+    "url": "https://www.instagram.com/secretnyc/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@shea_stadium_bk (instagram)",
+    "url": "https://www.instagram.com/shea_stadium_bk/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@skarstedtgallery (instagram)",
+    "url": "https://www.instagram.com/skarstedtgallery/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@songkick (instagram)",
+    "url": "https://www.instagram.com/songkick/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@spruethmagers (instagram)",
+    "url": "https://www.instagram.com/spruethmagers/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@studiomuseum (instagram)",
+    "url": "https://www.instagram.com/studiomuseum/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@summerstage (instagram)",
+    "url": "https://www.instagram.com/summerstage/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@tanyabonakdargallery (instagram)",
+    "url": "https://www.instagram.com/tanyabonakdargallery/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@terminal5nyc (instagram)",
+    "url": "https://www.instagram.com/terminal5nyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@theartnewspaper (instagram)",
+    "url": "https://www.instagram.com/theartnewspaper/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thebellhouseny (instagram)",
+    "url": "https://www.instagram.com/thebellhouseny/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thegardennyc (instagram)",
+    "url": "https://www.instagram.com/thegardennyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thejewishmuseum (instagram)",
+    "url": "https://www.instagram.com/thejewishmuseum/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@themuseumofmodernart (instagram)",
+    "url": "https://www.instagram.com/themuseumofmodernart/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@theslantedroom (instagram)",
+    "url": "https://www.instagram.com/theslantedroom/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thestudioatwebster (instagram)",
+    "url": "https://www.instagram.com/thestudioatwebster/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thetrendyspot (instagram)",
+    "url": "https://www.instagram.com/thetrendyspot/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thetribecaball (instagram)",
+    "url": "https://www.instagram.com/thetribecaball/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thrillist (instagram)",
+    "url": "https://www.instagram.com/thrillist/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@timeout.newyork (instagram)",
+    "url": "https://www.instagram.com/timeout.newyork/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@timeoutnewyork (instagram)",
+    "url": "https://www.instagram.com/timeoutnewyork/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@unionpoolbar (instagram)",
+    "url": "https://www.instagram.com/unionpoolbar/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@villagevoice (instagram)",
+    "url": "https://www.instagram.com/villagevoice/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@websterhall (instagram)",
+    "url": "https://www.instagram.com/websterhall/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@whitneymuseum (instagram)",
+    "url": "https://www.instagram.com/whitneymuseum/",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@yourgirleats (instagram)",
+    "url": "https://www.instagram.com/yourgirleats/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@yungeryayo (instagram)",
+    "url": "https://www.instagram.com/yungeryayo/",
+    "source_type": "social",
+    "categories": [
+      "eating"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@zebulon.nyc (instagram)",
+    "url": "https://www.instagram.com/zebulon.nyc/",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@aegpresents (tiktok)",
+    "url": "https://www.tiktok.com/@aegpresents",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@artnews (tiktok)",
+    "url": "https://www.tiktok.com/@artnews",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@artsy (tiktok)",
+    "url": "https://www.tiktok.com/@artsy",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@avant_gardner (tiktok)",
+    "url": "https://www.tiktok.com/@avant_gardner",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@babysallrightbk (tiktok)",
+    "url": "https://www.tiktok.com/@babysallrightbk",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@bandsintown (tiktok)",
+    "url": "https://www.tiktok.com/@bandsintown",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@barclayslive (tiktok)",
+    "url": "https://www.tiktok.com/@barclayslive",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@bellhouseny (tiktok)",
+    "url": "https://www.tiktok.com/@bellhouseny",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@boweryballroom (tiktok)",
+    "url": "https://www.tiktok.com/@boweryballroom",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@bowerypresents (tiktok)",
+    "url": "https://www.tiktok.com/@bowerypresents",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@brooklynmirage (tiktok)",
+    "url": "https://www.tiktok.com/@brooklynmirage",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@brooklynmuseum (tiktok)",
+    "url": "https://www.tiktok.com/@brooklynmuseum",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@brooklynsteel (tiktok)",
+    "url": "https://www.tiktok.com/@brooklynsteel",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@brooklynvegan (tiktok)",
+    "url": "https://www.tiktok.com/@brooklynvegan",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@cooperhewitt (tiktok)",
+    "url": "https://www.tiktok.com/@cooperhewitt",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@davidzwirner (tiktok)",
+    "url": "https://www.tiktok.com/@davidzwirner",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@dice.fm (tiktok)",
+    "url": "https://www.tiktok.com/@dice.fm",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@elsewherebrooklyn (tiktok)",
+    "url": "https://www.tiktok.com/@elsewherebrooklyn",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@friezearts (tiktok)",
+    "url": "https://www.tiktok.com/@friezearts",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@gagosian (tiktok)",
+    "url": "https://www.tiktok.com/@gagosian",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@gladstonegallery (tiktok)",
+    "url": "https://www.tiktok.com/@gladstonegallery",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@guggenheim (tiktok)",
+    "url": "https://www.tiktok.com/@guggenheim",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@hauserwirth (tiktok)",
+    "url": "https://www.tiktok.com/@hauserwirth",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@hyperallergic (tiktok)",
+    "url": "https://www.tiktok.com/@hyperallergic",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@irvingplaza (tiktok)",
+    "url": "https://www.tiktok.com/@irvingplaza",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@kingstheatre (tiktok)",
+    "url": "https://www.tiktok.com/@kingstheatre",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@livenationnyc (tiktok)",
+    "url": "https://www.tiktok.com/@livenationnyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@luhringaugustine (tiktok)",
+    "url": "https://www.tiktok.com/@luhringaugustine",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@matthewmarks (tiktok)",
+    "url": "https://www.tiktok.com/@matthewmarks",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@mercuryloungenyc (tiktok)",
+    "url": "https://www.tiktok.com/@mercuryloungenyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@metmuseum (tiktok)",
+    "url": "https://www.tiktok.com/@metmuseum",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@mhownyc (tiktok)",
+    "url": "https://www.tiktok.com/@mhownyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@miacnew (tiktok)",
+    "url": "https://www.tiktok.com/@miacnew",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@newmuseum (tiktok)",
+    "url": "https://www.tiktok.com/@newmuseum",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@nycgo (tiktok)",
+    "url": "https://www.tiktok.com/@nycgo",
+    "source_type": "social",
+    "categories": [
+      "art",
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@nymag (tiktok)",
+    "url": "https://www.tiktok.com/@nymag",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@pacegallery (tiktok)",
+    "url": "https://www.tiktok.com/@pacegallery",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@perrotin (tiktok)",
+    "url": "https://www.tiktok.com/@perrotin",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@petzelgallery (tiktok)",
+    "url": "https://www.tiktok.com/@petzelgallery",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@pier17nyc (tiktok)",
+    "url": "https://www.tiktok.com/@pier17nyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@pioneerworks (tiktok)",
+    "url": "https://www.tiktok.com/@pioneerworks",
+    "source_type": "social",
+    "categories": [
+      "art",
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@printedmatter (tiktok)",
+    "url": "https://www.tiktok.com/@printedmatter",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@publicrecordsnyc (tiktok)",
+    "url": "https://www.tiktok.com/@publicrecordsnyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@radiocitymusichall (tiktok)",
+    "url": "https://www.tiktok.com/@radiocitymusichall",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@roughtradesnyc (tiktok)",
+    "url": "https://www.tiktok.com/@roughtradesnyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@songkick (tiktok)",
+    "url": "https://www.tiktok.com/@songkick",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@summerstagenyc (tiktok)",
+    "url": "https://www.tiktok.com/@summerstagenyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@tanyabonakdar (tiktok)",
+    "url": "https://www.tiktok.com/@tanyabonakdar",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@terminal5nyc (tiktok)",
+    "url": "https://www.tiktok.com/@terminal5nyc",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@theartnewspaper (tiktok)",
+    "url": "https://www.tiktok.com/@theartnewspaper",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thejewishmuseum (tiktok)",
+    "url": "https://www.tiktok.com/@thejewishmuseum",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@themuseumofmodernart (tiktok)",
+    "url": "https://www.tiktok.com/@themuseumofmodernart",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thenewyorker (tiktok)",
+    "url": "https://www.tiktok.com/@thenewyorker",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thestudiomuseum (tiktok)",
+    "url": "https://www.tiktok.com/@thestudiomuseum",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@thewarefield (tiktok)",
+    "url": "https://www.tiktok.com/@thewarefield",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@timeout.newyork (tiktok)",
+    "url": "https://www.tiktok.com/@timeout.newyork",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "active"
+  },
+  {
+    "name": "@villagevoice (tiktok)",
+    "url": "https://www.tiktok.com/@villagevoice",
+    "source_type": "social",
+    "categories": [
+      "concert"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  },
+  {
+    "name": "@whitneymuseum (tiktok)",
+    "url": "https://www.tiktok.com/@whitneymuseum",
+    "source_type": "social",
+    "categories": [
+      "art"
+    ],
+    "scrape_frequency_hours": 48,
+    "status": "candidate"
+  }
+]

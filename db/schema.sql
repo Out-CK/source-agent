@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS source_registry (
     validation_notes        TEXT,                      -- LLM validator's reasoning
     has_jsonld              BOOLEAN,                   -- page embeds schema.org Event JSON-LD
     scrape_method           TEXT,                      -- jsonld | llm_parse
+    scrape_options          JSONB,                     -- per-source Nimble extract overrides:
+                                                       -- {render_type, timeout, driver, browser_actions}
     scrape_frequency_hours  INTEGER DEFAULT 24,
     last_scraped_at         TIMESTAMPTZ,
     last_changed_at         TIMESTAMPTZ,               -- last time scraped content actually changed

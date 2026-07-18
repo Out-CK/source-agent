@@ -1,22 +1,171 @@
 [
-  {"name": "Madison Square Garden", "url": "https://www.msg.com/madison-square-garden/calendar", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Barclays Center", "url": "https://www.barclayscenter.com/events", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Radio City Music Hall", "url": "https://www.msg.com/radio-city-music-hall/calendar", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Carnegie Hall", "url": "https://www.carnegiehall.org/Calendar", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Beacon Theatre", "url": "https://www.msg.com/beacon-theatre/calendar", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Irving Plaza", "url": "https://www.irvingplaza.com/shows", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Webster Hall", "url": "https://www.websterhall.com/shows", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Brooklyn Steel", "url": "https://www.bowerypresents.com/venues/brooklyn-steel", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Terminal 5", "url": "https://www.terminal5nyc.com/shows", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Bowery Ballroom", "url": "https://www.boweryballroom.com/calendar", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Mercury Lounge", "url": "https://www.mercuryeastpresents.com/mercurylounge", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Music Hall of Williamsburg", "url": "https://www.bowerypresents.com/venues/music-hall-of-williamsburg", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "SummerStage Central Park", "url": "https://cityparksfoundation.org/summerstage/", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Forest Hills Stadium", "url": "https://foresthillsstadium.com/events/", "source_type": "venue_calendar", "categories": ["concert"]},
-  {"name": "Apollo Theater", "url": "https://www.apollotheater.org/events/", "source_type": "venue_calendar", "categories": ["concert", "comedy"]},
-  {"name": "United Palace", "url": "https://www.unitedpalace.org/events", "source_type": "venue_calendar", "categories": ["concert", "theater"]},
-  {"name": "NYC Parks Events", "url": "https://www.nycgovparks.org/events", "source_type": "institution", "categories": ["concert", "art", "class"]},
-  {"name": "Brooklyn Public Library Events", "url": "https://www.bklynlibrary.org/calendar", "source_type": "institution", "categories": ["class", "art"]},
-  {"name": "The Skint", "url": "https://theskint.com/", "source_type": "newsletter", "categories": ["concert", "comedy", "art", "eating", "class"]},
-  {"name": "Oh My Rockness NYC", "url": "https://www.ohmyrockness.com/shows", "source_type": "aggregator", "categories": ["concert"]}
+  {
+    "name": "Madison Square Garden",
+    "url": "https://www.msg.com/madison-square-garden",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Barclays Center",
+    "url": "https://www.barclayscenter.com/events",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Radio City Music Hall",
+    "url": "https://www.msg.com/radio-city-music-hall",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Carnegie Hall",
+    "url": "https://www.carnegiehall.org/Calendar",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Beacon Theatre",
+    "url": "https://www.msg.com/beacon-theatre",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Irving Plaza",
+    "url": "https://www.irvingplaza.com/shows",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Webster Hall",
+    "url": "https://www.websterhall.com/shows",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Brooklyn Steel",
+    "url": "https://www.bowerypresents.com/venues/brooklyn-steel",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Terminal 5",
+    "url": "https://www.terminal5nyc.com/shows",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Bowery Ballroom",
+    "url": "https://www.boweryballroom.com/calendar",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Mercury Lounge",
+    "url": "https://www.mercuryeastpresents.com/mercurylounge",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Music Hall of Williamsburg",
+    "url": "https://www.bowerypresents.com/venues/music-hall-of-williamsburg",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "SummerStage Central Park",
+    "url": "https://cityparksfoundation.org/summerstage/",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Forest Hills Stadium",
+    "url": "https://foresthillsstadium.com/events/",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert"
+    ]
+  },
+  {
+    "name": "Apollo Theater",
+    "url": "https://www.apollotheater.org/events/",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert",
+      "comedy"
+    ]
+  },
+  {
+    "name": "United Palace",
+    "url": "https://www.unitedpalace.org/events",
+    "source_type": "venue_calendar",
+    "categories": [
+      "concert",
+      "theater"
+    ]
+  },
+  {
+    "name": "NYC Parks Events",
+    "url": "https://www.nycgovparks.org/events",
+    "source_type": "institution",
+    "categories": [
+      "concert",
+      "art",
+      "class"
+    ]
+  },
+  {
+    "name": "Brooklyn Public Library Events",
+    "url": "https://www.bklynlibrary.org/calendar",
+    "source_type": "institution",
+    "categories": [
+      "class",
+      "art"
+    ]
+  },
+  {
+    "name": "The Skint",
+    "url": "https://theskint.com/",
+    "source_type": "newsletter",
+    "categories": [
+      "concert",
+      "comedy",
+      "art",
+      "eating",
+      "class"
+    ]
+  },
+  {
+    "name": "Oh My Rockness NYC",
+    "url": "https://www.ohmyrockness.com/shows",
+    "source_type": "aggregator",
+    "categories": [
+      "concert"
+    ]
+  }
 ]

@@ -19,7 +19,8 @@ from utils.url_normalizer import normalize_url
 
 logger = get_logger(__name__)
 
-_TABLES = ("source_registry", "discovery_search_history", "source_web_content")
+_TABLES = ("source_registry", "discovery_search_history", "source_web_content",
+           "event_entry_database_v2")
 
 
 def _now() -> str:
@@ -37,6 +38,11 @@ class RegistryStore:
     def update_source(self, source_id: str, fields: dict) -> None: ...
     def insert_scraped_content(self, row: dict) -> None: ...
     def next_source_id(self) -> str: ...
+    def get_unparsed_content(self, limit: Optional[int] = None) -> list[dict]: ...
+    def mark_content_parsed(self, row_ids: list) -> None: ...
+    def insert_event_entries(self, entries: list[dict]) -> None: ...
+    def get_existing_future_entries(self) -> list[dict]: ...
+    def next_event_entry_id(self) -> str: ...
 
 
 class SupabaseStore(RegistryStore):
@@ -99,6 +105,38 @@ class SupabaseStore(RegistryStore):
         last = int(res.data[0]["source_id"].split("-")[1]) if res.data else 0
         return f"SRC-{last + 1:06d}"
 
+    def get_unparsed_content(self, limit: Optional[int] = None) -> list[dict]:
+        q = (
+            self._sb.table("source_web_content")
+            .select("id, source_id, url, categories, content")
+            .eq("parsed", False)
+            .order("scraped_at")
+        )
+        if limit:
+            q = q.limit(limit)
+        return q.execute().data
+
+    def mark_content_parsed(self, row_ids: list) -> None:
+        for rid in row_ids:
+            self._sb.table("source_web_content").update({"parsed": True}).eq("id", rid).execute()
+
+    def insert_event_entries(self, entries: list[dict]) -> None:
+        if entries:
+            self._sb.table("event_entry_database_v2").insert(entries).execute()
+
+    def get_existing_future_entries(self) -> list[dict]:
+        # date is a text MM-DD-YYYY column, so >= comparisons in SQL are unreliable;
+        # fetch the dedup columns and filter by real dates in the parser.
+        res = (
+            self._sb.table("event_entry_database_v2")
+            .select("event_entry_id, artist, venue, date, start_time")
+            .execute()
+        )
+        return res.data or []
+
+    def next_event_entry_id(self) -> str:
+        return self._sb.rpc("next_event_entry_id").execute().data
+
 
 class DryRunStore(RegistryStore):
     """File-backed store mirroring the Supabase tables, for --dry-run."""
@@ -108,7 +146,9 @@ class DryRunStore(RegistryStore):
         if self._path.exists():
             self._db = json.loads(self._path.read_text())
         else:
-            self._db = {t: [] for t in _TABLES}
+            self._db = {}
+        for t in _TABLES:
+            self._db.setdefault(t, [])
         logger.info(f"DryRunStore using {self._path.resolve()}")
 
     def _save(self) -> None:
@@ -145,7 +185,8 @@ class DryRunStore(RegistryStore):
         self._save()
 
     def insert_scraped_content(self, row: dict) -> None:
-        self._db["source_web_content"].append({**row, "scraped_at": _now()})
+        next_id = len(self._db["source_web_content"]) + 1
+        self._db["source_web_content"].append({**row, "id": next_id, "scraped_at": _now()})
         self._save()
 
     def next_source_id(self) -> str:
@@ -155,6 +196,33 @@ class DryRunStore(RegistryStore):
             if s.get("source_id", "").startswith("SRC-")
         ]
         return f"SRC-{(max(ids) if ids else 0) + 1:06d}"
+
+    def get_unparsed_content(self, limit: Optional[int] = None) -> list[dict]:
+        rows = [r for r in self._db["source_web_content"] if not r.get("parsed")]
+        return rows[:limit] if limit else rows
+
+    def mark_content_parsed(self, row_ids: list) -> None:
+        for r in self._db["source_web_content"]:
+            if r.get("id") in row_ids:
+                r["parsed"] = True
+        self._save()
+
+    def insert_event_entries(self, entries: list[dict]) -> None:
+        for e in entries:
+            self._db["event_entry_database_v2"].append({**e, "created_at": _now()})
+        self._save()
+
+    def get_existing_future_entries(self) -> list[dict]:
+        return [
+            {k: e.get(k) for k in ("event_entry_id", "artist", "venue", "date", "start_time")}
+            for e in self._db["event_entry_database_v2"]
+        ]
+
+    def next_event_entry_id(self) -> str:
+        self._entry_id_counter = getattr(
+            self, "_entry_id_counter", len(self._db["event_entry_database_v2"])
+        ) + 1
+        return f"{self._entry_id_counter:012d}"
 
 
 def _is_due(source: dict) -> bool:

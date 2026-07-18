@@ -1,0 +1,225 @@
+"""
+Event Parser — closes the source-first loop.
+
+Consumes unparsed rows from source_web_content (raw pages the scraper stored
+because their content changed), extracts structured events with an LLM,
+dedupes against upcoming entries already in event_entry_database_v2, and
+inserts the new ones. Rows are marked parsed even when they yield zero events;
+they stay unparsed only if the LLM call itself failed, so they retry next run.
+"""
+from __future__ import annotations
+
+import re
+from datetime import date, datetime
+from typing import List, Literal, Optional
+
+from langchain_anthropic import ChatAnthropic
+from pydantic import BaseModel, Field
+
+from db.operations import RegistryStore
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+MODEL = "claude-sonnet-5"
+MAX_CONTENT_CHARS = 30000
+WEBPAGE_CONTENTS_CHARS = 20000
+
+
+class ParsedEvent(BaseModel):
+    event_title: str
+    description: Optional[str] = None
+    artist: str = Field(
+        description="Performer/host/organizer name. If none is named, repeat the event title."
+    )
+    venue: str
+    event_type: Literal["concert", "comedy", "art", "theater", "eating", "class"]
+    date: str = Field(description='Event date, format "MM-DD-YYYY". One entry per distinct date.')
+    start_time: Optional[str] = Field(default=None, description='Format "H:MMam"/"H:MMpm"')
+    end_time: Optional[str] = None
+    multi_day_event: bool = False
+    address: Optional[str] = Field(default=None, description="Street address if shown on the page")
+    genre: Optional[str] = None
+    ticket_url: Optional[str] = Field(
+        default=None, description="Direct ticket-purchase URL if present on the page"
+    )
+
+
+class PageParseResult(BaseModel):
+    events: List[ParsedEvent]
+
+
+PARSE_PROMPT = """You are an event data extraction specialist for a NYC events database.
+Extract every individual upcoming NYC event from the page below.
+
+Rules:
+- Today is {today}. Only include events on {today} or later. Skip past events.
+- Create a SEPARATE entry for each distinct event date. A show running Fri-Sun = 3 entries
+  (multi_day_event=true on each). A weekly recurring class = one entry per listed date,
+  at most 4 weeks out.
+- Only include events with a specific date. Skip "coming soon" or undated items.
+- date format is "MM-DD-YYYY". Times like "8pm" become "8:00pm".
+- event_type must be one of: {allowed_types} (this source covers those categories;
+  pick the best fit per event).
+- Only extract real events happening at a physical NYC location. Skip ads, past-event
+  recaps, and non-NYC events.
+- If the page lists no upcoming events, return an empty list.
+
+SOURCE: {source_name} ({url})
+
+PAGE CONTENT:
+{content}
+"""
+
+# Match the vertical agents' normalization so dedup keys line up
+_VENUE_SUFFIX_RE = re.compile(
+    r",?\s*(new york(?: city)?|nyc|brooklyn|queens|bronx|staten island|manhattan)"
+    r"(,?\s*(ny|new york))?\s*$",
+    re.IGNORECASE,
+)
+_TIME_RE = re.compile(r"^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$", re.IGNORECASE)
+
+
+def _norm_venue(v: str) -> str:
+    v = _VENUE_SUFFIX_RE.sub("", v.strip()).strip().rstrip(",").strip()
+    return v.lower()
+
+
+def _norm_artist(a: str) -> str:
+    a = a.strip().lower()
+    a = re.sub(r"\s*[\(\[].*?[\)\]]", "", a)
+    a = re.sub(r"\s+(feat(uring)?|ft)\.?\s+.+$", "", a)
+    return a.strip()
+
+
+def _norm_time(t: Optional[str]) -> Optional[str]:
+    if not t:
+        return None
+    m = _TIME_RE.match(t.strip())
+    if not m:
+        return t.strip().lower()
+    return f"{int(m.group(1)):02d}:{m.group(2) or '00'}{m.group(3).lower()}"
+
+
+def _parse_date(d: str) -> Optional[date]:
+    try:
+        return datetime.strptime(d.strip(), "%m-%d-%Y").date()
+    except ValueError:
+        return None
+
+
+class EventParserAgent:
+    def __init__(self, store: RegistryStore):
+        self._store = store
+        self._llm = ChatAnthropic(model=MODEL, max_tokens=16384).with_structured_output(
+            PageParseResult
+        )
+
+    def run(self, limit: int | None = None) -> dict:
+        rows = self._store.get_unparsed_content(limit=limit)
+        logger.info(f"=== Event Parse Run | {len(rows)} unparsed source pages ===")
+        stats = {"pages": len(rows), "events_extracted": 0, "dupes_skipped": 0,
+                 "past_or_invalid": 0, "inserted": 0, "pages_failed": 0}
+        if not rows:
+            logger.info("Nothing to parse")
+            return stats
+
+        entry_batch_id = datetime.now().strftime("%m%d%Y_%H%M%S")
+        existing_keys = self._existing_keys()
+        batch_keys: set[tuple] = set()
+
+        for row in rows:
+            try:
+                events = self._parse_page(row)
+            except Exception as e:
+                stats["pages_failed"] += 1
+                logger.error(f"Parse failed for {row.get('url')} (left unparsed for retry): {e}")
+                continue
+
+            stats["events_extracted"] += len(events)
+            entries = []
+            today = date.today()
+            for ev in events:
+                d = _parse_date(ev.date)
+                if not d or d < today:
+                    stats["past_or_invalid"] += 1
+                    continue
+                keys = self._keys_for(ev)
+                if any(k in existing_keys or k in batch_keys for k in keys):
+                    stats["dupes_skipped"] += 1
+                    continue
+                batch_keys.update(keys)
+                entries.append(self._to_entry(ev, row, entry_batch_id))
+
+            if entries:
+                self._store.insert_event_entries(entries)
+                stats["inserted"] += len(entries)
+            self._store.mark_content_parsed([row["id"]])
+            logger.info(
+                f"Parsed {row.get('url')}: {len(events)} events, {len(entries)} inserted"
+            )
+
+        logger.info(f"=== Event Parse Run DONE | {stats} ===")
+        return stats
+
+    def _parse_page(self, row: dict) -> list[ParsedEvent]:
+        allowed = row.get("categories") or ["concert", "comedy", "art", "theater", "eating", "class"]
+        prompt = PARSE_PROMPT.format(
+            today=date.today().strftime("%m-%d-%Y"),
+            allowed_types=", ".join(allowed),
+            source_name=row.get("source_id", "?"),
+            url=row.get("url", "?"),
+            content=(row.get("content") or "")[:MAX_CONTENT_CHARS],
+        )
+        result: PageParseResult = self._llm.invoke([{"role": "user", "content": prompt}])
+        # Constrain to the source's categories in case the LLM drifted
+        return [e for e in result.events if e.event_type in allowed] or result.events
+
+    def _existing_keys(self) -> set[tuple]:
+        keys: set[tuple] = set()
+        for e in self._store.get_existing_future_entries():
+            keys.update(self._keys_for_row(e))
+        logger.info(f"Dedup index built from {len(keys)} existing-entry keys")
+        return keys
+
+    @staticmethod
+    def _keys_for_row(e) -> list[tuple]:
+        artist = _norm_artist(e.get("artist") or "")
+        venue = _norm_venue(e.get("venue") or "")
+        d = (e.get("date") or "").strip()
+        t = _norm_time(e.get("start_time"))
+        keys = [("avd", artist, venue, d)]
+        if t:
+            keys.append(("vdt", venue, d, t))
+        return keys
+
+    def _keys_for(self, ev: ParsedEvent) -> list[tuple]:
+        return self._keys_for_row(
+            {"artist": ev.artist, "venue": ev.venue, "date": ev.date, "start_time": ev.start_time}
+        )
+
+    def _to_entry(self, ev: ParsedEvent, row: dict, entry_batch_id: str) -> dict:
+        content = (row.get("content") or "")[:WEBPAGE_CONTENTS_CHARS]
+        entry = {
+            "event_entry_id": self._store.next_event_entry_id(),
+            "entry_batch_id": entry_batch_id,
+            "event_title": ev.event_title,
+            "description": ev.description,
+            "artist": ev.artist or ev.event_title,
+            "venue": ev.venue,
+            "event_type": ev.event_type,
+            "multi_day_event": ev.multi_day_event,
+            "date": ev.date,
+            "start_time": ev.start_time,
+            "end_time": ev.end_time,
+            "genre": ev.genre,
+            "address": ev.address,
+            "webpage_contents": content,
+        }
+        if ev.ticket_url:
+            entry["tickets_source_1"] = ev.ticket_url
+            entry["no_tickets_source_1"] = row.get("url")
+        else:
+            entry["no_tickets_source_1"] = row.get("url")
+            entry["no_tickets_webpage_contents_1"] = content
+        return entry

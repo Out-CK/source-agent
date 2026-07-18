@@ -33,13 +33,19 @@ Every candidate is validated before entering the registry: the page is fetched,
 checked programmatically for schema.org Event JSON-LD (deterministic parsing
 downstream), and classified by an LLM as a durable NYC event source or not.
 
-## Scrape Run (daily)
+## Scrape + Parse Run (daily)
 
-Fetches every `active` source that is due (per-source `scrape_frequency_hours`),
-compares a sha256 content hash, and stores only **changed** content into
-`source_web_content` for the vertical agents' parsers to consume
-(`parsed = false` rows are the work queue). Sources failing 5 times in a row
-are marked `dead`.
+Fetches every `active` source that is due (per-source `scrape_frequency_hours`)
+via the Nimble Extract API, compares a sha256 content hash, and stores only
+**changed** content into `source_web_content` (`parsed = false` rows are the
+work queue). Sources failing 5 times in a row are marked `dead`.
+
+The parse step (`--parse`) then consumes unparsed rows: an LLM extracts every
+upcoming event (one entry per distinct date), entries are deduped against
+upcoming rows already in `event_entry_database_v2` on normalized
+(artist, venue, date) and (venue, date, time) keys, and new events are inserted
+with `event_entry_id`s from the shared Postgres sequence. Pages that yield zero
+events are still marked parsed; only LLM failures stay queued for retry.
 
 ## Modules
 
@@ -51,6 +57,7 @@ are marked `dead`.
 | `agent/lead_resolver.py` | Follow-up searches that turn leads into candidates |
 | `agent/source_validator.py` | Fetch + JSON-LD check + LLM classification of candidates |
 | `agent/source_scraper.py` | Routine scraping with change detection |
+| `agent/event_parser.py` | Parses changed source pages into deduped `event_entry_database_v2` rows |
 | `db/schema.sql` | `source_registry`, `discovery_search_history`, `source_web_content` |
 | `db/operations.py` | Store interface: Supabase backend + local dry-run backend |
 

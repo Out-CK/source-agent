@@ -58,6 +58,7 @@ def main() -> None:
     parser.add_argument("--seed", action="store_true")
     parser.add_argument("--discover", action="store_true")
     parser.add_argument("--scrape", action="store_true")
+    parser.add_argument("--parse", action="store_true")
     parser.add_argument("--stats", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--max-queries", type=int, default=15)
@@ -76,6 +77,10 @@ def main() -> None:
         from agent.source_scraper import SourceScraper
 
         SourceScraper(store).run(limit=args.limit)
+    elif args.parse:
+        from agent.event_parser import EventParserAgent
+
+        EventParserAgent(store).run(limit=args.limit)
     elif args.stats:
         cmd_stats(store)
     else:

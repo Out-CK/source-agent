@@ -75,6 +75,12 @@ class ParsedEvent(BaseModel):
         "admission, no cover, free with RSVP). false if tickets are sold or a price "
         "is shown. null when the page doesn't say.",
     )
+    setting: Optional[Literal["indoor", "outdoor"]] = Field(
+        default=None,
+        description="'outdoor' for parks, rooftops, gardens, piers, stadiums, street "
+        "fairs, open-air markets; 'indoor' for clubs, theaters, galleries, halls. "
+        "null when genuinely unclear.",
+    )
 
 
 class PageParseResult(BaseModel):
@@ -383,6 +389,7 @@ class EventParserAgent:
             "end_time": ev.end_time,
             "genre": ev.genre,
             "is_free": ev.is_free,
+            "setting": ev.setting,
             "address": ev.address,
             "webpage_contents": content,
         }

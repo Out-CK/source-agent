@@ -30,6 +30,12 @@ jobs:
           NIMBLE_API_KEY: ${{ secrets.NIMBLE_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      - name: Geocode backfill (retry entries whose venue lookup failed at parse time)
+        if: always()
+        run: python main.py --geocode
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       - name: Archive past events
         if: always()
         run: python main.py --archive

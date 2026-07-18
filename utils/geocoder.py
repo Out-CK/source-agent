@@ -90,6 +90,11 @@ _KNOWN_VENUES: dict[str, str] = {
     "st. ignatius of antioch":  "552 West End Ave, New York, NY 10024",
     "paramount hudson valley":  "1008 Brown St, Peekskill, NY 10566",
     "josie robertson plaza":    "Lincoln Center, New York City, NY",
+    "greenwich village comedy club": "99 MacDougal St, New York, NY 10012",
+    "broadway comedy club":     "318 W 53rd St, New York, NY 10019",
+    "flop house comedy club":   "201 Allen St, New York, NY 10002",
+    "qed astoria":              "27-16 23rd Ave, Astoria, NY 11105",
+    "cobra club":               "6 Wyckoff Ave, Brooklyn, NY 11237",
 }
 
 
@@ -143,19 +148,35 @@ _PARENS_RE = re.compile(r"\s*\([^)]*\)")
 _BRAND_RE = re.compile(r"\s+(?:powered by|presented by|sponsored by)\s+.+$", re.IGNORECASE)
 
 # Venues that are genuinely unknown — skip geocoding entirely
-_UNKNOWN_RE = re.compile(r"(tbd|to be determined|exact venue|venue unknown)", re.IGNORECASE)
+_UNKNOWN_RE = re.compile(
+    r"(tbd|to be determined|exact venue|venue unknown|various venues)", re.IGNORECASE
+)
 
 
-def _candidate_queries(venue: str) -> list[str]:
+def _address_queries(address: Optional[str]) -> list[str]:
+    """Queries built from the entry's own address field, when it looks like a
+    street address (contains a number). Most reliable signal we have."""
+    if not address or not re.search(r"\d", address):
+        return []
+    street = _STREET_ADDRESS_RE.search(address)
+    addr_q = (street.group(1) if street else address).strip().rstrip(",").strip()
+    queries = []
+    if not re.search(r"\b(ny|new york)\b", addr_q, re.IGNORECASE):
+        queries.append(f"{addr_q}, New York, NY")
+    queries.append(addr_q)
+    return queries
+
+
+def _candidate_queries(venue: str, address: Optional[str] = None) -> list[str]:
     """
     Generate an ordered list of Nominatim query strings to try for a venue name.
     More specific / likely-to-work queries come first.
     """
-    # Skip genuinely unknown venues
+    # Genuinely unknown venues: only the entry's own address can locate them
     if _UNKNOWN_RE.search(venue):
-        return []
+        return _address_queries(address)
 
-    candidates: list[str] = []
+    candidates: list[str] = _address_queries(address)
 
     borough_match = _BOROUGH_RE.search(venue)
     borough = borough_match.group(1).title() if borough_match else None
@@ -228,11 +249,13 @@ def _candidate_queries(venue: str) -> list[str]:
     return [q for q in candidates if q and not (q in seen or seen.add(q))]  # type: ignore[func-returns-value]
 
 
-def lookup_coords(venue: str) -> Optional[tuple[float, float, str]]:
+def lookup_coords(venue: str, address: Optional[str] = None) -> Optional[tuple[float, float, str]]:
     """
     Return (lat, lng, address) for a venue name, or None if not found.
+    An address hint from the entry itself is tried first when it looks like
+    a street address.
     """
-    queries = _candidate_queries(venue)
+    queries = _candidate_queries(venue, address)
     if not queries:
         logger.info(f"Skipping unknown/TBD venue: '{venue}'")
         return None
@@ -302,11 +325,16 @@ def enrich_entries_with_coords(
     cache: dict[str, tuple[float, float, str] | None] = dict(existing_cache or {})
     unique_venues = {e["venue"] for e in entries if e.get("venue") and e.get("venue") != "<UNKNOWN>"}
     to_fetch = [v for v in unique_venues if v not in cache]
+    # Address hint per venue: the entry's own address is the strongest signal
+    addr_by_venue: dict[str, str] = {}
+    for e in entries:
+        if e.get("venue") and e.get("address") and e["venue"] not in addr_by_venue:
+            addr_by_venue[e["venue"]] = e["address"]
 
     logger.info(f"Geocoding: {len(unique_venues)} unique venues, {len(to_fetch)} need lookup")
 
     for venue in to_fetch:
-        cache[venue] = lookup_coords(venue)
+        cache[venue] = lookup_coords(venue, addr_by_venue.get(venue))
 
     for entry in entries:
         venue = entry.get("venue", "")

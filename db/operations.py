@@ -127,12 +127,22 @@ class SupabaseStore(RegistryStore):
     def get_existing_future_entries(self) -> list[dict]:
         # date is a text MM-DD-YYYY column, so >= comparisons in SQL are unreliable;
         # fetch the dedup columns and filter by real dates in the parser.
-        res = (
-            self._sb.table("event_entry_database_v2")
-            .select("event_entry_id, artist, venue, date, start_time")
-            .execute()
-        )
-        return res.data or []
+        # Paginate past PostgREST's 1000-row cap or the dedup index silently truncates.
+        rows: list[dict] = []
+        page = 1000
+        offset = 0
+        while True:
+            res = (
+                self._sb.table("event_entry_database_v2")
+                .select("event_entry_id, artist, venue, date, start_time")
+                .range(offset, offset + page - 1)
+                .execute()
+            )
+            batch = res.data or []
+            rows.extend(batch)
+            if len(batch) < page:
+                return rows
+            offset += page
 
     def next_event_entry_id(self) -> str:
         return self._sb.rpc("next_event_entry_id").execute().data

@@ -49,6 +49,7 @@ class RegistryStore:
     def update_event_entry(self, event_entry_id: str, fields: dict) -> None: ...
     def get_past_entries(self) -> list[dict]: ...
     def insert_past_event_entry(self, entry: dict) -> None: ...
+    def past_entry_exists(self, event_entry_id: str) -> bool: ...
     def delete_event_entry(self, event_entry_id: str) -> None: ...
 
 
@@ -218,6 +219,16 @@ class SupabaseStore(RegistryStore):
             {k: v for k, v in entry.items() if k != "id"}
         ).execute()
 
+    def past_entry_exists(self, event_entry_id: str) -> bool:
+        res = (
+            self._sb.table("past_event_entry_database")
+            .select("event_entry_id")
+            .eq("event_entry_id", event_entry_id)
+            .limit(1)
+            .execute()
+        )
+        return bool(res.data)
+
     def delete_event_entry(self, event_entry_id: str) -> None:
         self._sb.table("event_entry_database_v2").delete().eq(
             "event_entry_id", event_entry_id
@@ -356,6 +367,12 @@ class DryRunStore(RegistryStore):
             {k: v for k, v in entry.items() if k != "id"}
         )
         self._save()
+
+    def past_entry_exists(self, event_entry_id: str) -> bool:
+        return any(
+            e.get("event_entry_id") == event_entry_id
+            for e in self._db.get("past_event_entry_database", [])
+        )
 
     def delete_event_entry(self, event_entry_id: str) -> None:
         self._db["event_entry_database_v2"] = [

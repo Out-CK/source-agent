@@ -30,8 +30,13 @@ class PastEventArchiver:
             try:
                 self._store.insert_past_event_entry(entry)
             except Exception as e:
-                logger.error(f"Archiver: insert failed for {eid} — skipping delete: {e}")
-                continue
+                # Already archived by an earlier run: safe to delete the live row —
+                # but only after confirming it really exists in the past table.
+                if "duplicate key" in str(e) and self._store.past_entry_exists(eid):
+                    logger.info(f"Archiver: {eid} already in past DB — deleting live row")
+                else:
+                    logger.error(f"Archiver: insert failed for {eid} — skipping delete: {e}")
+                    continue
             try:
                 self._store.delete_event_entry(eid)
                 archived += 1

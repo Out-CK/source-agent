@@ -9,6 +9,7 @@ they stay unparsed only if the LLM call itself failed, so they retry next run.
 """
 from __future__ import annotations
 
+import json
 import re
 from datetime import date, datetime
 from typing import List, Literal, Optional
@@ -64,6 +65,7 @@ Rules:
 - Only extract real events happening at a physical NYC location. Skip ads, past-event
   recaps, and non-NYC events.
 - If the page lists no upcoming events, return an empty list.
+- Extract at most 40 events per page; if there are more, keep the 40 soonest.
 
 SOURCE: {source_name} ({url})
 
@@ -111,8 +113,8 @@ def _parse_date(d: str) -> Optional[date]:
 class EventParserAgent:
     def __init__(self, store: RegistryStore):
         self._store = store
-        self._llm = ChatAnthropic(model=MODEL, max_tokens=16384).with_structured_output(
-            PageParseResult
+        self._llm = ChatAnthropic(model=MODEL, max_tokens=32768).with_structured_output(
+            PageParseResult, include_raw=True
         )
 
     def run(self, limit: int | None = None) -> dict:
@@ -171,9 +173,29 @@ class EventParserAgent:
             url=row.get("url", "?"),
             content=(row.get("content") or "")[:MAX_CONTENT_CHARS],
         )
-        result: PageParseResult = self._llm.invoke([{"role": "user", "content": prompt}])
+        res = self._llm.invoke([{"role": "user", "content": prompt}])
+        result: Optional[PageParseResult] = res.get("parsed")
+        if result is None:
+            result = self._repair(res)
         # Constrain to the source's categories in case the LLM drifted
         return [e for e in result.events if e.event_type in allowed] or result.events
+
+    @staticmethod
+    def _repair(res: dict) -> PageParseResult:
+        """On long outputs the model occasionally returns the `events` tool arg
+        double-encoded as a JSON string; decode and validate it manually."""
+        raw = res.get("raw")
+        tool_calls = getattr(raw, "tool_calls", None) or []
+        if not tool_calls:
+            raise ValueError(f"structured output failed: {res.get('parsing_error')}")
+        events = tool_calls[0].get("args", {}).get("events")
+        if isinstance(events, str):
+            decoded = json.loads(events)
+            events = decoded.get("events") if isinstance(decoded, dict) else decoded
+        if not isinstance(events, list):
+            raise ValueError(f"unrepairable structured output: {res.get('parsing_error')}")
+        logger.warning("Repaired double-encoded structured output")
+        return PageParseResult(events=events)
 
     def _existing_keys(self) -> set[tuple]:
         keys: set[tuple] = set()

@@ -68,6 +68,8 @@ def main() -> None:
     parser.add_argument("--archive", action="store_true")
     parser.add_argument("--geocode", action="store_true",
                         help="Backfill lat/lng/address for entries missing coords")
+    parser.add_argument("--sync-discovery", action="store_true",
+                        help="Upsert upcoming events into the NYC Discovery feed tables")
     parser.add_argument("--enrich-media", action="store_true",
                         help="Backfill media_url for entries missing images")
     parser.add_argument("--stats", action="store_true")
@@ -124,6 +126,11 @@ def main() -> None:
                 store.update_event_entry(r["event_entry_id"], {"media_url": r["media_url"]})
                 updated += 1
         logger.info(f"Media backfill: updated {updated}/{len(rows)} entries")
+    elif args.sync_discovery:
+        from db.supabase_client import get_supabase_client
+
+        res = get_supabase_client().rpc("sync_nyc_discovery").execute()
+        logger.info(f"Discovery sync: {res.data}")
     elif args.stats:
         cmd_stats(store)
     else:

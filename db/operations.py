@@ -226,6 +226,11 @@ class SupabaseStore(RegistryStore):
         return self._sb.rpc("next_event_entry_id").execute().data
 
     def _paged(self, query_builder):
+        # Offset pagination is only stable with a total order; without it,
+        # Postgres may repeat or skip rows across pages. Every table here has
+        # a bigserial `id`, so impose it (callers' own .order()s still apply
+        # first — PostgREST treats this as the final tiebreaker).
+        query_builder = query_builder.order("id", desc=False)
         rows: list[dict] = []
         page, offset = 1000, 0
         while True:

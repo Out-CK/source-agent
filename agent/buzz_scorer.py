@@ -36,6 +36,12 @@ WINDOW_DAYS = 7            # trailing window for "recent" sightings
 DECAY_HALF_LIFE_DAYS = 7.0 # sighting weight halves every week
 SURPRISE_CAP = 2.0         # max bonus from out-buzzing your venue's baseline
 
+# The 🔥 Buzzing badge goes to the top decile each run, never below the floor.
+# Percentile-based because the score distribution shifts as sightings age and
+# engagement data accrues — a fixed cutoff either floods or starves the badge.
+BUZZING_PERCENTILE = 0.90
+BUZZING_FLOOR = 1.1
+
 # How much one sighting from each source type is worth. Editorial coverage and
 # organic social posts are scarcer (and more meaningful) than aggregator rows.
 SOURCE_TYPE_WEIGHTS = {
@@ -102,7 +108,7 @@ class BuzzScorer:
             by_venue.setdefault(v, []).append(raw[e["event_entry_id"]][0])
         global_median = median([s for s, _ in raw.values()]) if raw else 0.0
 
-        updated = 0
+        finals: dict[str, tuple[float, list[str]]] = {}
         for e in entries:
             eid = e["event_entry_id"]
             score, reasons = raw[eid]
@@ -116,22 +122,33 @@ class BuzzScorer:
                 reasons.append("outsized buzz for this venue")
             else:
                 surprise = min(surprise, 0.3)
-            final = round(score + surprise, 2)
+            finals[eid] = (round(score + surprise, 2), reasons)
+
+        # Badge threshold: top decile of this run's scores, floored so a
+        # quiet dataset doesn't badge noise.
+        ordered = sorted(s for s, _ in finals.values())
+        p90 = ordered[int(len(ordered) * BUZZING_PERCENTILE)] if ordered else 0.0
+        threshold = max(p90, BUZZING_FLOOR)
+
+        updated = 0
+        for eid, (final, reasons) in finals.items():
             try:
-                self._store.update_event_entry(
-                    eid, {"buzz_score": final, "buzz_reasons": reasons or None}
-                )
+                self._store.update_event_entry(eid, {
+                    "buzz_score": final,
+                    "buzz_reasons": reasons or None,
+                    "buzzing": final >= threshold,
+                })
                 updated += 1
             except Exception as ex:
                 logger.warning(f"buzz update failed for {eid}: {ex}")
 
-        scores = sorted((raw[e["event_entry_id"]][0] for e in entries), reverse=True)
+        n_buzzing = sum(1 for s, _ in finals.values() if s >= threshold)
         logger.info(
-            f"=== Buzz Score Run DONE | updated {updated} | "
-            f"top={scores[0] if scores else 0:.2f} "
-            f"median={scores[len(scores)//2] if scores else 0:.2f} ==="
+            f"=== Buzz Score Run DONE | updated {updated} | threshold={threshold:.2f} "
+            f"buzzing={n_buzzing} | top={ordered[-1] if ordered else 0:.2f} "
+            f"median={ordered[len(ordered)//2] if ordered else 0:.2f} ==="
         )
-        return {"scored": updated}
+        return {"scored": updated, "buzzing": n_buzzing, "threshold": threshold}
 
     def _raw_score(
         self, entry: dict, sightings: list[dict], live_eng: dict, now: datetime

@@ -34,3 +34,4 @@ ALTER TABLE event_entry_database_v2 ADD COLUMN IF NOT EXISTS buzz_reasons JSONB;
 ALTER TABLE event_entry_database_v2 ADD COLUMN IF NOT EXISTS onsale_at TIMESTAMPTZ;
 ALTER TABLE event_entry_database_v2 ADD COLUMN IF NOT EXISTS price_min DOUBLE PRECISION;
 ALTER TABLE event_entry_database_v2 ADD COLUMN IF NOT EXISTS price_max DOUBLE PRECISION;
+ALTER TABLE event_entry_database_v2 ADD COLUMN IF NOT EXISTS buzzing BOOLEAN;

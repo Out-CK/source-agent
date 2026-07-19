@@ -107,7 +107,7 @@ def main() -> None:
         if args.limit:
             rows = rows[: args.limit]
         logger.info(f"Geocode backfill: {len(rows)} entries missing coords")
-        enrich_entries_with_coords(rows, store.get_venue_coords_cache())
+        enrich_entries_with_coords(rows, store.get_venue_coords_cache(), deep=True)
         updated = 0
         for r in rows:
             if r.get("lat") is not None:

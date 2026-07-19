@@ -308,6 +308,77 @@ def lookup_coords(venue: str, address: Optional[str] = None) -> Optional[tuple[f
     return None
 
 
+def _search_address_for_venue(venue: str) -> Optional[str]:
+    """Deep fallback: Nominatim can't resolve most business names (galleries,
+    cafés, small theaters aren't in OSM's name index). Web-search the venue,
+    have a small LLM pull out the street address, and return it — street
+    addresses geocode reliably where names don't."""
+    from langchain_anthropic import ChatAnthropic
+    from pydantic import BaseModel
+
+    from tools.nimble_search_tool import NimbleSearchTool
+
+    class VenueAddress(BaseModel):
+        address: Optional[str] = None
+
+    snippets: list[str] = []
+    try:
+        results = NimbleSearchTool()._run(f"{_clean_venue(venue)} New York address", "niche")
+        for r in results[:4]:
+            snippets.append(
+                f"Title: {r.get('title', '')}\nContent: {(r.get('content') or '')[:800]}"
+            )
+    except Exception as e:
+        logger.warning(f"Address search failed for '{venue}': {e}")
+    if not snippets:
+        return None
+
+    try:
+        llm = ChatAnthropic(model="claude-haiku-4-5-20251001").with_structured_output(VenueAddress)
+        result: VenueAddress = llm.invoke([{
+            "role": "user",
+            "content": (
+                f'Find the street address of the NYC-area venue "{venue}" in these search results:\n\n'
+                + "\n\n---\n".join(snippets)
+                + '\n\nReturn the full street address (e.g. "35 W 35th St, New York, NY 10001"). '
+                "Only return an address these results actually state for this exact venue; "
+                "return null if none is given."
+            ),
+        }])
+        if result.address:
+            logger.info(f"Search fallback found address for '{venue}': {result.address}")
+        return result.address
+    except Exception as e:
+        logger.warning(f"Address extraction failed for '{venue}': {e}")
+        return None
+
+
+def lookup_coords_deep(venue: str, address: Optional[str] = None) -> Optional[tuple[float, float, str]]:
+    """lookup_coords plus the search-based fallback. Costs a web search and a
+    small LLM call per miss — used by the --geocode backfill, not inline parse."""
+    result = lookup_coords(venue, address)
+    if result:
+        return result
+    if _UNKNOWN_RE.search(venue):
+        return None
+    found_address = _search_address_for_venue(venue)
+    if not found_address:
+        return None
+    for query in _address_queries(found_address):
+        try:
+            results = _nominatim_search(query)
+            if results:
+                r = results[0]
+                lat = float(r["lat"])
+                lng = float(r["lon"])
+                built = _build_address(r) or found_address
+                logger.info(f"Deep-geocoded '{venue}' via '{query}' → ({lat}, {lng})")
+                return lat, lng, built
+        except Exception as e:
+            logger.warning(f"Deep geocode failed for '{venue}' (query='{query}'): {e}")
+    return None
+
+
 # Keep old name as an alias for any callers that only need the address string
 def lookup_address(venue: str) -> Optional[str]:
     result = lookup_coords(venue)
@@ -317,10 +388,13 @@ def lookup_address(venue: str) -> Optional[str]:
 def enrich_entries_with_coords(
     entries: list[dict],
     existing_cache: dict[str, tuple[float, float, str]] | None = None,
+    deep: bool = False,
 ) -> list[dict]:
     """
     Add address, lat, and lng fields to each entry dict by geocoding its venue.
     existing_cache maps venue → (lat, lng, address) to avoid redundant lookups.
+    deep=True adds the search+LLM fallback for names Nominatim can't resolve —
+    use for the backfill step, not inline parse.
     """
     cache: dict[str, tuple[float, float, str] | None] = dict(existing_cache or {})
     unique_venues = {e["venue"] for e in entries if e.get("venue") and e.get("venue") != "<UNKNOWN>"}
@@ -331,10 +405,11 @@ def enrich_entries_with_coords(
         if e.get("venue") and e.get("address") and e["venue"] not in addr_by_venue:
             addr_by_venue[e["venue"]] = e["address"]
 
-    logger.info(f"Geocoding: {len(unique_venues)} unique venues, {len(to_fetch)} need lookup")
+    logger.info(f"Geocoding: {len(unique_venues)} unique venues, {len(to_fetch)} need lookup (deep={deep})")
 
+    lookup = lookup_coords_deep if deep else lookup_coords
     for venue in to_fetch:
-        cache[venue] = lookup_coords(venue, addr_by_venue.get(venue))
+        cache[venue] = lookup(venue, addr_by_venue.get(venue))
 
     for entry in entries:
         venue = entry.get("venue", "")
